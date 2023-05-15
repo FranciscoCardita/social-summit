@@ -70,14 +70,11 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Festival Manager'),
-      ),
       body: Stack(
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/background.png',
+              'assets/background.jpg',
               opacity: const AlwaysStoppedAnimation(.5),
               fit: BoxFit.fitHeight,
             ),
@@ -108,7 +105,7 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
           Center(
             child: Column(
               children: [
-                const SizedBox(height: 700.0),
+                const SizedBox(height: 600.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -185,7 +182,6 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.black.withOpacity(0.5),
       child: Center(
         child: Card(
           margin: const EdgeInsets.all(32.0),
@@ -223,7 +219,6 @@ class SignupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.black.withOpacity(0.5),
       child: Center(
         child: Card(
           margin: const EdgeInsets.all(32.0),
