@@ -76,7 +76,7 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
             child: Image.asset(
               'assets/background.jpg',
               opacity: const AlwaysStoppedAnimation(.5),
-              fit: BoxFit.fitHeight,
+              fit: BoxFit.cover,
             ),
           ),
           Center(
@@ -191,7 +191,7 @@ class LoginScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
-                  'Login Screen',
+                  'Login',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
