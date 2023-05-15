@@ -1,0 +1,46 @@
+{
+  "name": "social-summit",
+  "version": "0.0.1",
+  "description": "An event manager app.",
+  "contributors": [
+    {
+      "name": "Guilherme Vieira",
+      "email": "guilhermevieira@ua.pt",
+      "url": "https://github.com/GuilhermeVieiraDev/"
+    },
+    {
+      "name": "Francisco Cardita",
+      "email": "franciscocardita@ua.pt",
+      "url": "https://github.com/FranciscoCardita/"
+    },
+    {
+      "name": "Guilherme Santos",
+      "email": "gui.fecha@ua.pt",
+      "url": "https://github.com/Guifecha/"
+    },
+    {
+      "name": "Francisco Goncalves",
+      "email": "franciscomg@ua.pt",
+      "url": "https://github.com/lilsoaps/"
+    }
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node ./dist/src/app.js",
+    "lint": "eslint src && eslint lib",
+    "lint:fix": "eslint src --fix && eslint lib --fix"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongodb": "^5.5.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/node": "^20.1.4",
+    "@typescript-eslint/eslint-plugin": "^5.59.6",
+    "@typescript-eslint/parser": "^5.59.6",
+    "eslint": "^8.40.0",
+    "eslint-plugin-import": "^2.27.5",
+    "typescript": "^5.0.4"
+  }
+}
