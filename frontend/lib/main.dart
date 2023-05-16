@@ -24,12 +24,12 @@ class FestivalManagerApp extends StatelessWidget {
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
             padding: MaterialStateProperty.all<EdgeInsets>(
-              EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Adjust padding
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Adjust padding
             ),
             minimumSize: MaterialStateProperty.all<Size>(
-              Size(120, 50), // Adjust minimum size
+              const Size(120, 50), // Adjust minimum size
             ),
-            backgroundColor: MaterialStateProperty.all<Color>(Color(0xFFBD93F9)),
+            backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFFBD93F9)),
             foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // Set button text color to white
           ),
         ),
@@ -89,6 +89,13 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
                     fontSize: 64,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 20.0,
+                        color: Color.fromARGB(150, 0, 0, 0),
+                        offset: Offset(5.0, 5.0),
+                      ),
+                    ],
                   ),
                 ),
                 Text(
@@ -97,6 +104,13 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
                     fontSize: 64,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 20.0,
+                        color: Color.fromARGB(150, 0, 0, 0),
+                        offset: Offset(5.0, 5.0),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -181,29 +195,60 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Card(
-          margin: const EdgeInsets.all(32.0),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Login',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+    return Center(
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        margin: const EdgeInsets.all(32.0),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: onClose,
+                    iconSize: 20.0,
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
                   ),
+                ],
+              ),
+              const Text(
+                'Welcome back!',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: onClose,
-                  child: const Text('Login'),
-                ),
-              ],
-            ),
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  SizedBox(height: 16),
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Username',
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  TextField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: onClose,
+                child: const Text('Login'),
+              ),
+            ],
           ),
         ),
       ),
