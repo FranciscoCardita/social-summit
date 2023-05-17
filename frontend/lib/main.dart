@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:proj/wallet.dart';
 
 void main() {
   runApp(const FestivalManagerApp());
@@ -157,6 +159,10 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
           OverlayScreen(
             child: SignupScreen(
               onClose: closeOverlay,
+              onShowLogin: () {
+                closeOverlay();
+                showLogin();
+              },              
             ),
           ),
         ],
@@ -179,7 +185,6 @@ class OverlayScreen extends StatelessWidget {
       child: Container(
         child: Center(
           child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 32),
             child: child
           ),
         ),
@@ -193,9 +198,18 @@ class LoginScreen extends StatelessWidget {
 
   const LoginScreen({required this.onClose});
 
+  void navigateToWallet(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Wallet(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Container(
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
@@ -210,11 +224,11 @@ class LoginScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   IconButton(
-                    icon: Icon(Icons.close),
+                    icon: const Icon(Icons.close),
                     onPressed: onClose,
                     iconSize: 20.0,
                     padding: EdgeInsets.zero,
-                    constraints: BoxConstraints(),
+                    constraints: const BoxConstraints(),
                   ),
                 ],
               ),
@@ -228,10 +242,13 @@ class LoginScreen extends StatelessWidget {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: const [
-                  SizedBox(height: 16),
+                  SizedBox(height: 32),
                   TextField(
                     decoration: InputDecoration(
-                      labelText: 'Username',
+                      labelText: 'Email',
+                      border: OutlineInputBorder(
+                            borderSide: BorderSide(),
+                        ),
                     ),
                   ),
                   SizedBox(height: 8),
@@ -239,13 +256,16 @@ class LoginScreen extends StatelessWidget {
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: 'Password',
+                      border: OutlineInputBorder(
+                            borderSide: BorderSide(),
+                        ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 32),
               ElevatedButton(
-                onPressed: onClose,
+                onPressed: () => navigateToWallet(context),
                 child: const Text('Login'),
               ),
             ],
@@ -258,20 +278,36 @@ class LoginScreen extends StatelessWidget {
 
 class SignupScreen extends StatelessWidget {
   final VoidCallback onClose;
+  final VoidCallback onShowLogin;
 
-  const SignupScreen({required this.onClose});
+  const SignupScreen({required this.onClose, required this.onShowLogin});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Center(
         child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
           margin: const EdgeInsets.all(32.0),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: onClose,
+                      iconSize: 20.0,
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ],
+                ),
                 const Text(
                   'Signup',
                   style: TextStyle(
@@ -279,9 +315,65 @@ class SignupScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 16),
+                Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 16),
+                  const TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Full name',
+                      border: OutlineInputBorder(
+                            borderSide: BorderSide(),
+                        ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(
+                            borderSide: BorderSide(),
+                        ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  IntlPhoneField(
+                    decoration: const InputDecoration(
+                        labelText: 'Phone Number',
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide(),
+                        ),
+                    ),
+                    initialCountryCode: 'PT',
+                    onChanged: (phone) {
+                        print(phone.completeNumber);
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  const TextField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const TextField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Confirm password',
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+                const SizedBox(height: 32),
                 ElevatedButton(
-                  onPressed: onClose,
+                  onPressed: onShowLogin,
                   child: const Text('Create account'),
                 ),
               ],
@@ -292,17 +384,3 @@ class SignupScreen extends StatelessWidget {
     );
   }
 }
-
-// class SignupScreen extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Signup'),
-//       ),
-//       body: const Center(
-//         child: Text('Signup Screen'),
-//       ),
-//     );
-//   }
-// }
