@@ -33,7 +33,7 @@ dist/
 .packages
 .pub-cache/
 .pub/
-/build/
+/frontend/build/
 
 # Symbolication related
 app.*.symbols
