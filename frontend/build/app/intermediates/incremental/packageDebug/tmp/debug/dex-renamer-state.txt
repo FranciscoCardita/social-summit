@@ -1,4 +1,4 @@
-#Mon May 15 23:36:07 WEST 2023
-base.0=/home/franciscocardita/Documents/Uni/Year2/AS/proj/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
+#Wed May 17 13:48:06 WEST 2023
+base.0=/home/franciscocardita/Documents/Uni/Year2/AS/proj/frontend/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
 path.0=classes.dex
 renamed.0=classes.dex
