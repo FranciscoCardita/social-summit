@@ -5,16 +5,16 @@ node_modules/
 dist/
 
 # frontend
-/frontend/android/
-/frontend/ios/
-/frontend/linux/
-/frontend/macos/
-/frontend/test/
-/frontend/web/
-/frontend/windows/
-/frontend/.dart_tool/
-/frontend/.flutter-plugins
-/frontend/.flutter-plugins-dependencies
-/frontend/.idea/
-/frontend/build/
-/frontend/proj.iml
+# /frontend/android/
+# /frontend/ios/
+# /frontend/linux/
+# /frontend/macos/
+# /frontend/test/
+# /frontend/web/
+# /frontend/windows/
+# /frontend/.dart_tool/
+# /frontend/.flutter-plugins
+# /frontend/.flutter-plugins-dependencies
+# /frontend/.idea/
+# /frontend/build/
+# /frontend/proj.iml
