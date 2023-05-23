@@ -1,3 +1,5 @@
+const [SLASH, COLON] = [47, 58];
+
 /**
  * Verify if the input is a function.
  * @param input The function to verify
@@ -126,7 +128,40 @@ export function deepClone<T>(source: T): T {
 	return source;
 }
 
+/**
+ * Parses a url part
+ * @param value The string part to parse
+ */
+export function parsePart(value: string): ParsedPart {
+	const type = Number(value.charCodeAt(0) === COLON);
+	if (type) value = value.substring(1);
+	return { value, type };
+}
+
+/**
+ * Splits a url into it's parts
+ * @param url The url to split
+ */
+export function split(url: string): string[] {
+	if (url.length === 1 && url.charCodeAt(0) === SLASH) return [url];
+	else if (url.charCodeAt(0) === SLASH) url = url.substring(1);
+	return url.split('/');
+}
+
+/**
+ * Splits and parses a url into it's parts
+ * @param url The url to split and parse
+ */
+export function parse(url: string): ParsedPart[] {
+	return split(url).map(parsePart);
+}
+
 export const PRIMITIVE_TYPES = ['string', 'bigint', 'number', 'boolean'];
+
+export interface ParsedPart {
+	value: string;
+	type: number;
+}
 
 export interface Thenable {
 	then: Function;
