@@ -72,6 +72,7 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Positioned.fill(
