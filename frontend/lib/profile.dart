@@ -3,6 +3,7 @@ import 'navbar.dart';
 import 'tickets.dart';
 import 'map.dart';
 import 'wallet.dart';
+import 'main.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -13,6 +14,15 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   int _selectedIndex = 3;
+
+  void navigateToMain(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const FestivalManagerApp(),
+      ),
+    );
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -73,34 +83,26 @@ class _ProfileState extends State<Profile> {
             ),
             const SizedBox(height: 32),
             ElevatedButton(
-              onPressed: () {
-                // Navegar para a tela de dados pessoais
-              },
+              onPressed: () {},
               child: const Text('Personal Data'),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () {
-                // Navegar para a tela de notificações
-              },
+              onPressed: () {},
               child: const Text('Notifications'),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () {
-                // Navegar para a tela de perguntas frequentes (FAQs)
-              },
+              onPressed: () {},
               child: const Text('FAQs'),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () {
-                // Realizar logout
-              },
-              child: const Text('Sign Out'),
+              onPressed: () => navigateToMain(context),
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
               ),
+              child: const Text('Sign Out'),
             ),
           ],
         ),
