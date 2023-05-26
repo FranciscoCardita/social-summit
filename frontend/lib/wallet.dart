@@ -3,6 +3,9 @@ import 'tickets.dart';
 import 'map.dart';
 import 'profile.dart';
 import 'navbar.dart';
+import 'addFunds.dart';
+
+enum PaymentMethod { mbway, card }
 
 class Wallet extends StatefulWidget {
   const Wallet({super.key});
@@ -14,6 +17,7 @@ class Wallet extends StatefulWidget {
 class _WalletState extends State<Wallet> {
   int _selectedIndex = 0;
   OverlayEntry? _overlayEntry;
+  PaymentMethod? _paymentMethod = PaymentMethod.mbway;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -50,45 +54,13 @@ class _WalletState extends State<Wallet> {
   }
 
   void _addFunds() {
-    OverlayState? overlayState = Overlay.of(context);
-    _overlayEntry = OverlayEntry(
-      builder: (BuildContext context) {
-        return Positioned(
-          top: MediaQuery.of(context).size.height * 0.4,
-          left: MediaQuery.of(context).size.width * 0.25,
-          width: MediaQuery.of(context).size.width * 0.5,
-          child: Material(
-            child: Container(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Add Funds',
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w100,
-                        )
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () {
-                          _hideOverlay(); // Call the method to hide the overlay
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-
-    overlayState.insert(_overlayEntry!);
-  }
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AddFundsDialog();
+    },
+  );
+}
 
   void _transactions() {
     List<Map<String, String>> transactions = [
@@ -257,6 +229,7 @@ class _WalletState extends State<Wallet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       extendBody: true,
       backgroundColor: const Color.fromRGBO(28, 32, 37, 100),
       body: Column(
