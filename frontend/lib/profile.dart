@@ -35,7 +35,7 @@ class _ProfileState extends State<Profile> {
       case 2:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const Map())
+          MaterialPageRoute(builder: (context) => const MapScreen())
         );
         break;
       case 3:
