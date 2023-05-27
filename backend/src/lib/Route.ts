@@ -38,7 +38,7 @@ export default class Route {
 	public constructor(app: App, file: readonly string[], options: RouteOptions) {
 		this.app = app;
 		this.name = options.name ?? basename(file[file.length - 1], extname(file[file.length - 1]));
-		this.route = '/' + options.route;
+		this.route = 'api/' + options.route;
 		this.parsed = parse(this.route);
 	}
 
