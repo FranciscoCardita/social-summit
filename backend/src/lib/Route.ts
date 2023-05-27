@@ -9,7 +9,7 @@ export interface RouteOptions {
 
 export type ParsedRoute = ParsedPart[];
 
-export default class Route {
+export class Route {
 
 	/**
 	 * The App that manages this Route instance

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { App } from '../app';
-import Route from '../lib/Route';
+import { Route } from '../lib/Route';
 
 export default class extends Route {
 
