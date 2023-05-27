@@ -5,7 +5,7 @@ import { join, relative, sep } from 'path';
 require('dotenv-override').config({ path: join(__dirname, '../', '.env') });
 
 import Server from './express';
-import Route from './lib/Route';
+import { Route } from './lib/Route';
 import { isClass } from './lib/Util';
 import Database from './mongodb';
 
