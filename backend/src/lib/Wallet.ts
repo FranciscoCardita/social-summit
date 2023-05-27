@@ -1,10 +1,12 @@
+import { Snowflake } from '@sapphire/snowflake';
+
 export enum TransactionType {
 	PAYMENT = 'PAYMENT',
 	TOPUP = 'TOPUP'
 }
 
 export interface Transaction {
-	id: string;
+	id: Snowflake;
 	type: TransactionType;
 	date: Date;
 	amount: number;
@@ -12,7 +14,7 @@ export interface Transaction {
 }
 
 export interface Wallet {
-	id: string;
+	id: Snowflake;
 	balance: number;
 	transactions: Transaction[];
 }

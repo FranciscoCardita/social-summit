@@ -31,6 +31,7 @@
     "lint:fix": "eslint src --fix && eslint lib --fix"
   },
   "dependencies": {
+    "@sapphire/snowflake": "^3.5.1",
     "express": "^4.18.2",
     "mongodb": "^5.5.0"
   },
