@@ -3,7 +3,7 @@ import { User } from './User';
 export enum NotificationType {
 	ENTERED_VENUE = 'ENTERED_VENUE',
 	LEFT_VENUE = 'LEFT_VENUE',
-	COMING = 'COMING',
+	COMING = 'COMING'
 }
 
 export interface Notification {
