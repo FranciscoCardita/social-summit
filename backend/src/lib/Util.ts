@@ -1,4 +1,4 @@
-import { randomBytes } from 'crypto';
+import { createHash, randomBytes } from 'crypto';
 
 const [SLASH, COLON] = [47, 58];
 
@@ -164,6 +164,14 @@ export function parse(url: string): ParsedPart[] {
  */
 export function generateToken(length = 32): string {
 	return randomBytes(length).toString('hex');
+}
+
+/**
+ * Encryps a string to sha256
+ * @param str The string to encrypt
+ */
+export function encrypt(str: string): string {
+	return createHash('sha256').update(str).digest('hex');
 }
 
 export const PRIMITIVE_TYPES = ['string', 'bigint', 'number', 'boolean'];
