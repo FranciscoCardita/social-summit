@@ -61,7 +61,17 @@ export default class Server {
 		const splitURL = split(info.pathname);
 		const route = this.app.findRoute(splitURL);
 
-		if (route) request.params = route.execute(splitURL);
+		// Check if the user is authenticated
+		if (route?.authenticated) {
+			const token = request.headers.authorization;
+			if (!token) return this.onError({ code: 401, message: 'Unauthorized' }, request, response);
+
+			const user = await this.app.db.exec
+				?.collection('users')
+				.findOne({ token });
+
+			if (!user) return this.onError({ code: 401, message: 'Unauthorized' }, request, response);
+		}
 
 		try {
 			if (response.writableEnded) return;

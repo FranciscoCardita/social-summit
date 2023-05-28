@@ -1,4 +1,5 @@
 import { createHash, randomBytes } from 'crypto';
+import { App } from '../app';
 
 const [SLASH, COLON] = [47, 58];
 
@@ -164,6 +165,26 @@ export function parse(url: string): ParsedPart[] {
  */
 export function generateToken(length = 32): string {
 	return randomBytes(length).toString('hex');
+}
+
+/**
+ * Checks if a token is already in use
+ * @param app The App instance
+ * @param token The token to check
+ */
+export async function tokenIsValid(app: App, token: string): Promise<boolean> {
+	const user = await app.db.exec?.collection('users').findOne({ token });
+	return !user;
+}
+
+/**
+ * Generates a valid token
+ * @param app The App instance
+ */
+export async function generateValidToken(app: App): Promise<string> {
+	let token = generateToken();
+	while (!await tokenIsValid(app, token)) token = generateToken();
+	return token;
 }
 
 /**
