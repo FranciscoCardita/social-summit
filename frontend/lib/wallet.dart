@@ -252,7 +252,7 @@ class _WalletState extends State<Wallet> {
           Container(
             alignment: Alignment.center,
             height: 520,
-            width: 330,
+            width: 370,
             child: Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
@@ -271,13 +271,20 @@ class _WalletState extends State<Wallet> {
                           fontWeight: FontWeight.w100,
                         ),
                       ),
-                      const SizedBox(width: 112),
-                      SizedBox(
-                        height: 40,
-                        width: 100,
-                        child: ElevatedButton(
-                          onPressed: _addFunds,
-                          child: const Text('Add Funds'),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 16),
+                            child: SizedBox(
+                              height: 40,
+                              width: 100,
+                              child: ElevatedButton(
+                                onPressed: _addFunds,
+                                child: const Text('Add Funds'),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ]
@@ -285,7 +292,7 @@ class _WalletState extends State<Wallet> {
                   const SizedBox(height: 32),
                   Image.asset(
                     'assets/qr.png',
-                    height: 260,
+                    height: 280,
                   ),
                   const SizedBox(
                     height: 6,
@@ -294,7 +301,7 @@ class _WalletState extends State<Wallet> {
                   const SizedBox(height: 48),
                   SizedBox(
                     height: 40,
-                    width: 260,
+                    width: 280,
                     child: ElevatedButton(
                       onPressed: _transactions,
                       child: const Text(

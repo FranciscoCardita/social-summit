@@ -110,7 +110,7 @@ class _TicketsState extends State<Tickets> {
           Container(
             alignment: Alignment.center,
             height: 520,
-            width: 330,
+            width: 370,
             child: Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
@@ -186,6 +186,10 @@ class _TicketsState extends State<Tickets> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          backgroundColor: const Color.fromARGB(255, 51, 60, 69),
           title: const Text('Lineup'),
           content: Image.asset(ticket.eventImage),
           actions: [
