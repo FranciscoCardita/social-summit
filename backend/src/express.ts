@@ -38,6 +38,7 @@ export default class Server {
 	constructor(app: App) {
 		this.app = app;
 		this.express = express();
+		this.express.use(express.json());
 		this.onNoMatch = this.onError.bind(this, { code: 404 });
 	}
 
@@ -76,7 +77,7 @@ export default class Server {
 		try {
 			if (response.writableEnded) return;
 			const method = METHODS_LOWER[request.method];
-			if (route && Reflect.has(route, method)) await Reflect.get(route, method)(request, response, next);
+			if (route && Reflect.has(route, method)) await Reflect.apply(Reflect.get(route, method), route, [request, response, next]);
 			else this.onNoMatch(request, response);
 		} catch (err: any) {
 			return this.onError(err, request, response);
