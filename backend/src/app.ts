@@ -24,8 +24,11 @@ export class App {
 		await this.registerRoutes();
 		await this.db.init();
 
-		const exists = await this.db.hasTable('users');
-		if (!exists) await this.db.createTable('users');
+		const existsUsers = await this.db.hasTable('users');
+		if (!existsUsers) await this.db.createTable('users');
+
+		const existsEvents = await this.db.hasTable('events');
+		if (!existsEvents) await this.db.createTable('events');
 
 		await this.express.listen(Number(process.env.PORT));
 	}
