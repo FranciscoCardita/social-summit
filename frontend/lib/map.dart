@@ -17,6 +17,13 @@ class Person {
   });
 }
 
+class Info {
+  final String info;
+  final String time;
+
+  Info({required this.info, required this.time});
+}
+
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);
 
@@ -33,17 +40,17 @@ class _MapState extends State<MapScreen> {
   void initState() {
     super.initState();
     _addMarker(
-      LatLng(40.631462, -8.663808), // Coordinates for marker 1
+      LatLng(40.631462, -8.663808),
       'Alice',
       '50m',
     );
     _addMarker(
-      LatLng(40.632062, -8.662985), // Coordinates for marker 2
+      LatLng(40.632062, -8.662985),
       'Jamal',
       '130 m',
     );
     _addMarker(
-      LatLng(40.631850, -8.662545), // Coordinates for marker 2
+      LatLng(40.631850, -8.662545),
       'Bob',
       '130 m',
     );
@@ -152,7 +159,7 @@ class _MapState extends State<MapScreen> {
                   },
                   child: Text('Venue info'),
                 ),
-                SizedBox(width: 10), // Adjust the spacing between buttons
+                SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () {
                     showGroup(context, persons);
@@ -160,6 +167,54 @@ class _MapState extends State<MapScreen> {
                   child: Text('My group'),
                 ),
               ],
+            ),
+          ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.only(right: 134),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Alice is coming to meet you',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 7),
+                  Text(
+                    '3:50 AM',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.only(right: 108),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Bob and Jamal are getting far',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 7),
+                  Text(
+                    '2:23 AM',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -188,7 +243,7 @@ class _MapState extends State<MapScreen> {
           title: Text('My Group'),
           content: SingleChildScrollView(
             child: Container(
-              height: 300, // Adjust the height to make the dialog smaller
+              height: 300,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: persons.map((person) {
@@ -196,11 +251,11 @@ class _MapState extends State<MapScreen> {
                     title: Text(person.nome),
                     subtitle: Text(person.distance),
                     leading: SizedBox(
-                      width: 60, // Specify the desired width
-                      height: 60, // Specify the desired height
+                      width: 60,
+                      height: 60,
                       child: Image.asset(
                         person.personImage,
-                        fit: BoxFit.cover, // Adjust the image fit as needed
+                        fit: BoxFit.cover,
                       ),
                     ),
                   );
@@ -210,8 +265,63 @@ class _MapState extends State<MapScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                addFriends(context);
+              },
               child: Text('Add Friends'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void addFriends(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String friendName;
+        String friendEmail;
+
+        return AlertDialog(
+          title: Text('Add Friends'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Name'),
+                onChanged: (value) {
+                  friendName = value;
+                },
+              ),
+              SizedBox(height: 10),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Email'),
+                onChanged: (value) {
+                  friendEmail = value;
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Add'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Close the dialog without adding the friend
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
             ),
           ],
         );
@@ -226,12 +336,12 @@ class _MapState extends State<MapScreen> {
         return AlertDialog(
           title: const Text('Venue Info'),
           content: Image.asset(
-            'assets/venue1.png', // Replace with your image path
+            'assets/venue1.png',
             width: 300,
-            height: 200,
+            height: 300,
           ),
           actions: [
-            ElevatedButton(
+            TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
