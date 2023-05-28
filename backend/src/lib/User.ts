@@ -6,6 +6,21 @@ export interface Localization {
 	longitude: number;
 }
 
+export enum EventType {
+	GENERAL_ADMISSION = 'GENERAL_ADMISSION',
+	DAILY = 'DAILY',
+}
+
+export interface Event {
+	id: string;
+	name: string;
+	startDate: Date;
+	endDate: Date;
+	location: string;
+	image: string;
+	type: EventType;
+}
+
 export interface User {
 	id: string;
 	name: string;
@@ -18,6 +33,7 @@ export interface User {
 	wallet: Wallet;
 	group: Group;
 	localization: Localization;
+	events: Event[];
 	token?: string;
 }
 

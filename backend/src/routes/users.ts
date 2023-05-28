@@ -51,6 +51,7 @@ export default class extends Route {
 				latitude: 0,
 				longitude: 0
 			},
+			events: [],
 			token: await generateValidToken(this.app)
 		};
 
