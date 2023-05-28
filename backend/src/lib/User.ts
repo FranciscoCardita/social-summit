@@ -10,6 +10,7 @@ export interface User {
 	id: string;
 	name: string;
 	email: string;
+	password: string;
 	birthDate: Date;
 	nif: string;
 	phone: string;
@@ -17,6 +18,7 @@ export interface User {
 	wallet: Wallet;
 	group: Group;
 	localization: Localization;
+	token?: string;
 }
 
 export interface Seller extends User {

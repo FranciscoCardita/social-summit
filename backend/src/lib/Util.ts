@@ -1,3 +1,5 @@
+import { randomBytes } from 'crypto';
+
 const [SLASH, COLON] = [47, 58];
 
 /**
@@ -154,6 +156,14 @@ export function split(url: string): string[] {
  */
 export function parse(url: string): ParsedPart[] {
 	return split(url).map(parsePart);
+}
+
+/**
+ * Generates a random token with the given length
+ * @param length The length of the token
+ */
+export function generateToken(length = 32): string {
+	return randomBytes(length).toString('hex');
 }
 
 export const PRIMITIVE_TYPES = ['string', 'bigint', 'number', 'boolean'];
