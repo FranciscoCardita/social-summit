@@ -167,7 +167,7 @@ export function generateToken(length = 32): string {
 }
 
 /**
- * Encryps a string to sha256
+ * Encrypts a string to sha256
  * @param str The string to encrypt
  */
 export function encrypt(str: string): string {
