@@ -33,7 +33,7 @@ export interface User {
 	wallet: Wallet;
 	group: Group;
 	localization: Localization;
-	events: Event[];
+	events: string[];
 	token?: string;
 }
 
