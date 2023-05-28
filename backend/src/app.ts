@@ -23,6 +23,10 @@ export class App {
 	public async init(): Promise<void> {
 		await this.registerRoutes();
 		await this.db.init();
+
+		const exists = await this.db.hasTable('users');
+		if (!exists) await this.db.createTable('users');
+
 		await this.express.listen(Number(process.env.PORT));
 	}
 
