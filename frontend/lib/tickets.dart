@@ -10,6 +10,7 @@ class Ticket {
   final String endDate;
   final String location;
   final String eventImage;
+  final String ticketType;
 
   Ticket({
     required this.eventName,
@@ -17,6 +18,7 @@ class Ticket {
     required this.endDate,
     required this.location,
     required this.eventImage,
+    required this.ticketType,
   });
 }
 
@@ -68,18 +70,20 @@ class _TicketsState extends State<Tickets> {
   Widget build(BuildContext context) {
     List<Ticket> tickets = [
       Ticket(
+        eventName: 'Enterro 2023',
+        startDate: '22/04/2023',
+        endDate: '29/04/2023',
+        location: 'Universidade do Aveiro',
+        eventImage: 'assets/enterro.jpg',
+        ticketType: 'General Admission',
+      ),
+      Ticket(
         eventName: 'Nos Alive 2023',
         startDate: '6/06/2023',
         endDate: '8/06/2023',
         location: 'Passeio Maritimo de Algés',
         eventImage: 'assets/nos.jpg',
-      ),
-      Ticket(
-        eventName: 'Enterro 2023',
-        startDate: '15/06/2023',
-        endDate: '17/06/2023',
-        location: 'Universidade do Aveiro',
-        eventImage: 'assets/enterro.jpg',
+        ticketType: 'Daily',
       ),
     ];
 
@@ -102,43 +106,68 @@ class _TicketsState extends State<Tickets> {
               ),
             ],
           ),
-          SizedBox(
-            height: 400,
-            child: ListView.builder(
-            itemCount: tickets.length,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  _handleTicketClick(context, tickets[index]);
+          const SizedBox(height: 16),
+          Container(
+            alignment: Alignment.center,
+            height: 520,
+            width: 330,
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              color: const Color.fromRGBO(51, 60, 69, 100),
+              elevation: 4,
+              child: ListView.builder(
+                padding: const EdgeInsets.all(8),
+                itemCount: tickets.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      _handleTicketClick(context, tickets[index]);
+                    },
+                    child: Card(
+                      color: const Color.fromARGB(255, 87, 95, 105),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      elevation: 4,
+                      child: ListTile(
+                        title: Text(tickets[index].eventName),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${tickets[index].ticketType} Ticket',
+                              style: const TextStyle(
+                                color: Color(0xFFBD93F9),
+                              )
+                            ),
+                          ],
+                        ),
+                        trailing: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          color: const Color.fromRGBO(87, 95, 105, 100),
+                          elevation: 2,
+                          child: IconButton(
+                            icon: const Icon(Icons.calendar_today),
+                            onPressed: () {
+                              _handleCalendarIconClick(context, tickets[index]);
+                            },
+                        ),
+                        ),
+                      ),
+                    ),
+                  );
                 },
-                child: Card(
-                  elevation: 4,
-                  child: ListTile(
-                    title: Text(tickets[index].eventName),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Begin: ${tickets[index].startDate}'),
-                        Text('End: ${tickets[index].endDate}'),
-                        Text('Location: ${tickets[index].location}'),
-                      ],
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.calendar_today),
-                      onPressed: () {
-                        _handleCalendarIconClick(context, tickets[index]);
-                      },
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
+              ),
+            )
           ),
       ]),
       bottomNavigationBar: Container(
+        clipBehavior: Clip.hardEdge,
         decoration: const BoxDecoration(
-          color: Colors.white,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20.0),
             topRight: Radius.circular(20.0),
@@ -157,7 +186,7 @@ class _TicketsState extends State<Tickets> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Cartaz'),
+          title: const Text('Lineup'),
           content: Image.asset(ticket.eventImage),
           actions: [
             TextButton(
@@ -177,14 +206,34 @@ class _TicketsState extends State<Tickets> {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        backgroundColor: const Color.fromARGB(255, 51, 60, 69),
         title: Text(ticket.eventName),
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Local: ' + ticket.location),
-            Text('Begin: ' + ticket.startDate),
-            Text('End: ' + ticket.endDate),
+            Image.asset(
+              'assets/qr.png',
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                const Text('Place: ', style: TextStyle(fontWeight: FontWeight.w100)),
+                Text(ticket.location, style: const TextStyle(fontWeight: FontWeight.bold))
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Text('Date: ', style: TextStyle(fontWeight: FontWeight.w100)),
+                Text(ticket.startDate, style: const TextStyle(fontWeight: FontWeight.bold)),
+                const Text(' - ', style: TextStyle(fontWeight: FontWeight.w100)),
+                Text(ticket.endDate, style: const TextStyle(fontWeight: FontWeight.bold))
+              ],
+            ),
           ],
         ),
         actions: [
