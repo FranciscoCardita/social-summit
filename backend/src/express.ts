@@ -62,6 +62,8 @@ export default class Server {
 		const splitURL = split(info.pathname);
 		const route = this.app.findRoute(splitURL);
 
+		if (route) request.params = route.execute(splitURL);
+
 		// Check if the user is authenticated
 		if (route?.authenticated) {
 			const token = request.headers.authorization;

@@ -59,4 +59,14 @@ export class Route {
 		return true;
 	}
 
+	/**
+	 * Extracts the params from a provided url.
+	 * @param split the url
+	 */
+	public execute(split: string[]): Record<string, string> {
+		const params: Record<string, string> = {};
+		for (let i = 0; i < this.parsed.length; i++) if (this.parsed[i].type === 1) params[this.parsed[i].value] = split[i];
+		return params;
+	}
+
 }

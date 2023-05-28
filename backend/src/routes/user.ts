@@ -14,6 +14,11 @@ export default class extends Route {
 		const user = await this.app.db.get('users', userID);
 		if (!user) return response.status(404).json({ message: 'User not found' });
 
+		// @ts-ignore
+		delete user._id;
+		// @ts-ignore
+		delete user.password;
+
 		return response.json(user);
 	}
 
