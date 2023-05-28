@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -10,31 +11,28 @@ class AddFundsDialog extends StatefulWidget {
 }
 
 class _AddFundsDialogState extends State<AddFundsDialog> {
+  bool? get _validateAmount {
+    final text = _amountController.value.text;
+    if (text.isNotEmpty) {
+      if (text.isNotEmpty && double.parse(text) < 1) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   String _paymentMethod = 'MBWay';
-  TextEditingController _phoneNumberController = TextEditingController();
-  TextEditingController _cardNumberController = TextEditingController();
-  TextEditingController _expiryDateController = TextEditingController();
-  TextEditingController _securityNumberController = TextEditingController();
-  TextEditingController _amountController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _cardNumberController = TextEditingController();
+  final TextEditingController _expiryDateController = TextEditingController();
+  final TextEditingController _securityNumberController =
+      TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
 
   void _handlePaymentMethodChange(String? value) {
     setState(() {
       _paymentMethod = value!;
     });
-  }
-
-  void _confirmButtonPressed() {
-    print('Payment Method: $_paymentMethod');
-
-    if (_paymentMethod == 'MBWay') {
-      print('Phone Number: ${_phoneNumberController.text}');
-    } else if (_paymentMethod == 'Card') {
-      print('Card Number: ${_cardNumberController.text}');
-      print('Expiry Date: ${_expiryDateController.text}');
-      print('Security Number: ${_securityNumberController.text}');
-    }
-
-    print('Amount: ${_amountController.text}');
   }
 
   @override
@@ -78,16 +76,16 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
             ),
             if (_paymentMethod == 'MBWay')
               IntlPhoneField(
-                      decoration: const InputDecoration(
-                        labelText: 'Phone Number',
-                      ),
-                      initialCountryCode: 'PT',
-                      onChanged: (phone) {
-                        setState(() {
-                          print(phone.completeNumber);
-                        });
-                      },
-                    ),
+                decoration: const InputDecoration(
+                  labelText: 'Phone Number',
+                ),
+                initialCountryCode: 'PT',
+                onChanged: (phone) {
+                  setState(() {
+                    print(phone.completeNumber);
+                  });
+                },
+              ),
             if (_paymentMethod == 'Card')
               Column(
                 children: [
@@ -101,7 +99,8 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
                       Expanded(
                         child: TextFormField(
                           controller: _expiryDateController,
-                          decoration: const InputDecoration(labelText: 'Expiry Date'),
+                          decoration:
+                              const InputDecoration(labelText: 'Expiry Date'),
                           keyboardType: TextInputType.number,
                           inputFormatters: [
                             LengthLimitingTextInputFormatter(5),
@@ -113,7 +112,8 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
                       Expanded(
                         child: TextFormField(
                           controller: _securityNumberController,
-                          decoration: const InputDecoration(labelText: 'Sec Number'),
+                          decoration:
+                              const InputDecoration(labelText: 'Sec Number'),
                           keyboardType: TextInputType.number,
                           inputFormatters: [
                             LengthLimitingTextInputFormatter(3),
@@ -122,38 +122,29 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
                       ),
                     ],
                   ),
-                  
                 ],
               ),
-              const SizedBox(height: 16),
-              Form(
-                child: TextFormField(
-                  controller: _amountController,
-                  decoration: const InputDecoration(
-                    labelText: 'Amount',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
+            const SizedBox(height: 16),
+            Form(
+              child: TextFormField(
+                controller: _amountController,
+                decoration: const InputDecoration(
+                  labelText: 'Amount',
+                  prefixText: '€',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter an amount';
-                    }
-                    if (double.parse(value) < 1) {
-                      return 'Amount must be greater than 0';
-                    }
-                    return null;
-                  },
                 ),
+                keyboardType: TextInputType.number,
               ),
-              const Text(
-                "Minimum value of €1.00",
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 12,
-                ),
+            ),
+            const Text(
+              "Minimum value of €1.00",
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 12,
               ),
+            ),
           ],
         ),
       ),
@@ -165,7 +156,12 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
           child: const Text('Cancel'),
         ),
         ElevatedButton(
-          onPressed: _confirmButtonPressed,
+          onPressed: () {
+            if (_amountController.value.text.isEmpty || double.parse(_amountController.value.text) < 1) {
+              return;
+            }
+            Navigator.of(context).pop();
+          },
           child: const Text('Confirm'),
         ),
       ],
@@ -173,9 +169,11 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
   }
 }
 
+
 class _ExpiryDateInputFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     final text = newValue.text;
 
     if (text.length == 2 && oldValue.text.length < 3) {

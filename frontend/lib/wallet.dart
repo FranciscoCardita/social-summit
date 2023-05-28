@@ -265,7 +265,7 @@ class _WalletState extends State<Wallet> {
                   Row(
                     children: [
                       const SizedBox(width: 16),
-                      const Text("\$0.00",
+                      const Text("€0.00",
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w100,
