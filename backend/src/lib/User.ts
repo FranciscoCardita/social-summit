@@ -27,9 +27,7 @@ export interface User {
 	email: string;
 	password: string;
 	birthDate: Date;
-	nif: string;
 	phone: string;
-	address: string;
 	wallet: Wallet;
 	group: Group;
 	localization: Localization;

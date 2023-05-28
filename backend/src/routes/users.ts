@@ -12,15 +12,13 @@ export default class extends Route {
 	}
 
 	public async post(request: Request, response: Response): Promise<Response> {
-		const { name, email, password, birthDate, nif, phone, address } = request.body;
+		const { name, email, password, birthDate, phone } = request.body;
 
 		if (!name) return response.status(400).json({ message: 'Name is required!' });
 		if (!email) return response.status(400).json({ message: 'Email is required!' });
 		if (!password) return response.status(400).json({ message: 'Password is required!' });
 		if (!birthDate) return response.status(400).json({ message: 'Birth date is required!' });
-		if (!nif) return response.status(400).json({ message: 'NIF is required!' });
 		if (!phone) return response.status(400).json({ message: 'Phone is required!' });
-		if (!address) return response.status(400).json({ message: 'Address is required!' });
 
 		// Check if email is already in use
 		const userWithEmail = await this.app.db.exec
@@ -35,9 +33,7 @@ export default class extends Route {
 			email,
 			password: encrypt(password),
 			birthDate: new Date(birthDate),
-			nif,
 			phone,
-			address,
 			wallet: {
 				id: SocialSummitSnowflake.generate().toString(),
 				balance: 0,
