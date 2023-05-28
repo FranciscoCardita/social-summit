@@ -1,4 +1,3 @@
-import { Snowflake } from '@sapphire/snowflake';
 import { User } from './User';
 
 export enum NotificationType {
@@ -8,7 +7,7 @@ export enum NotificationType {
 }
 
 export interface Notification {
-	id: Snowflake;
+	id: string;
 	type: NotificationType;
 	date: Date;
 	description: string;

@@ -1,4 +1,3 @@
-import { Snowflake } from '@sapphire/snowflake';
 import { Group } from './Group';
 import { Wallet } from './Wallet';
 
@@ -8,7 +7,7 @@ export interface Localization {
 }
 
 export interface User {
-	id: Snowflake;
+	id: string;
 	name: string;
 	email: string;
 	birthDate: Date;
