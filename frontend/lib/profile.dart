@@ -107,10 +107,19 @@ class _ProfileState extends State<Profile> {
           ],
         ),
       ),
-      bottomNavigationBar: NavBar(
-        onItemTapped: _onItemTapped,
-        selectedIndex: _selectedIndex,
-      )
+      bottomNavigationBar: Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.0),
+            topRight: Radius.circular(20.0),
+          ),
+        ),
+        child: NavBar(
+          selectedIndex: _selectedIndex,
+          onItemTapped: _onItemTapped,
+        ),
+      ),
     );
   }
 }
