@@ -98,6 +98,8 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
     final response = await http.post(url, headers: headers, body: body);
 
     if (response.statusCode == 200) {
+      final token = jsonDecode(response.body)['token'];
+      await _setToken(token);
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -138,6 +140,8 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
     final response = await http.post(url, headers: headers, body: body);
 
     if (response.statusCode == 200) {
+      final token = jsonDecode(response.body)['token'];
+      await _setToken(token);
       Navigator.push(
         context,
         MaterialPageRoute(
