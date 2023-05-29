@@ -20,7 +20,7 @@ export default class extends Route {
 			?.collection('users')
 			.findOne({ email, password: encrypt(password) });
 
-		if (!user) return response.status(404).json({ message: 'Invalid email or password.' });
+		if (!user) return response.status(400).json({ message: 'Invalid email or password.' });
 		
 		// Generate token
 		const token = await generateValidToken(this.app);

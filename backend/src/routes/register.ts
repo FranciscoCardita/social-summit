@@ -25,7 +25,7 @@ export default class extends Route {
 			?.collection('users')
 			.findOne({ email });
 
-		if (userWithEmail) return response.status(404).json({ message: 'Email is already in use.' });
+		if (userWithEmail) return response.status(400).json({ message: 'Email is already in use.' });
 
 		const user: User = {
 			id: SocialSummitSnowflake.generate().toString(),

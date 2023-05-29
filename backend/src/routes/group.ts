@@ -18,7 +18,7 @@ export default class extends Route {
 			?.collection('users')
 			.findOne({ token }) as User | null;
 
-		if (!user) return response.status(404).json({ message: 'Invalid token.' });
+		if (!user) return response.status(400).json({ message: 'Invalid token.' });
 
 		return response.json(user.group);
 	}
@@ -32,7 +32,7 @@ export default class extends Route {
 			?.collection('users')
 			.findOne({ token }) as User | null;
 
-		if (!user) return response.status(404).json({ message: 'Invalid token.' });
+		if (!user) return response.status(400).json({ message: 'Invalid token.' });
 
 		const { email: userEmail } = request.body;
 		if (!userEmail) return response.status(400).json({ message: 'User email is required!' });
@@ -42,7 +42,7 @@ export default class extends Route {
 			?.collection('users')
 			.findOne({ email: userEmail }) as User | null;
 
-		if (!invitedUser) return response.status(404).json({ message: 'Invalid user email.' });
+		if (!invitedUser) return response.status(400).json({ message: 'Invalid user email.' });
 		if (user.group.users.find(u => u.id === invitedUser.id)) return response.status(400).json({ message: 'User is already in the group.' });
 
 		await this.app.db.update('users', user.id, {
@@ -70,7 +70,7 @@ export default class extends Route {
 			?.collection('users')
 			.findOne({ token }) as User | null;
 
-		if (!user) return response.status(404).json({ message: 'Invalid token.' });
+		if (!user) return response.status(400).json({ message: 'Invalid token.' });
 
 		const { id } = request.body;
 		if (!id) return response.status(400).json({ message: 'User ID is required!' });
@@ -80,7 +80,7 @@ export default class extends Route {
 			?.collection('users')
 			.findOne({ id }) as User | null;
 
-		if (!invitedUser) return response.status(404).json({ message: 'Invalid user ID.' });
+		if (!invitedUser) return response.status(400).json({ message: 'Invalid user ID.' });
 		if (!user.group.users.find(u => u.id === invitedUser.id)) return response.status(400).json({ message: 'User is not in the group.' });
 
 		await this.app.db.update('users', user.id, {

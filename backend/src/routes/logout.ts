@@ -17,7 +17,7 @@ export default class extends Route {
 			?.collection('users')
 			.findOne({ token });
 
-		if (!user) return response.status(404).json({ message: 'Invalid token.' });
+		if (!user) return response.status(400).json({ message: 'Invalid token.' });
 
 		// Clear token
 		await this.app.db.update('users', user.id, { token: undefined });

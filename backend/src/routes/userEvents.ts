@@ -18,7 +18,7 @@ export default class extends Route {
 			?.collection('users')
 			.findOne({ token }) as User | null;
 
-		if (!user) return response.status(404).json({ message: 'Invalid token.' });
+		if (!user) return response.status(400).json({ message: 'Invalid token.' });
 
 		const events = await this.app.db.exec?.collection('events').find({ id: { $in: user.events } }).toArray();
 
