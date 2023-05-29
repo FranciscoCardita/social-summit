@@ -1,5 +1,3 @@
-import { User } from './User';
-
 export enum NotificationType {
 	ENTERED_VENUE = 'ENTERED_VENUE',
 	LEFT_VENUE = 'LEFT_VENUE',
@@ -13,7 +11,12 @@ export interface Notification {
 	description: string;
 }
 
+export interface BasicUser {
+	id: string;
+	name: string;
+}
+
 export interface Group {
-	users: User[];
+	users: BasicUser[];
 	notifications: Notification[];
 }
