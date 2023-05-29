@@ -14,8 +14,8 @@ export default class extends Route {
 		const { userID } = request.params;
 
 		const user = await this.app.db.get('users', userID) as User | null;
-		if (!user) return response.status(404).json({ message: 'User not found' });
-		if (user.token !== token) return response.status(401).json({ message: 'Access restricted.' });
+		if (!user) return response.status(404).json({ message: 'User not found.' });
+		if (user.token !== token) return response.status(401).json({ message: 'Unauthorized.' });
 
 		// @ts-ignore
 		delete user._id;

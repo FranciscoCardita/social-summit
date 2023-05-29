@@ -71,13 +71,13 @@ export default class Server {
 		// Check if the user is authenticated
 		if (route?.authenticated) {
 			const token = request.headers.authorization;
-			if (!token) return this.onError({ code: 401, message: 'Unauthorized' }, request, response);
+			if (!token) return this.onError({ code: 401, message: 'Unauthorized.' }, request, response);
 
 			const user = await this.app.db.exec
 				?.collection('users')
 				.findOne({ token });
 
-			if (!user) return this.onError({ code: 401, message: 'Unauthorized' }, request, response);
+			if (!user) return this.onError({ code: 401, message: 'Invalid token.' }, request, response);
 		}
 
 		try {

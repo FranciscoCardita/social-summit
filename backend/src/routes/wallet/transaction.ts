@@ -13,14 +13,13 @@ export default class extends Route {
 
 	public async post(request: Request, response: Response): Promise<Response> {
 		const token = request.headers.authorization;
-		if (!token) return response.status(400).json({ message: 'Token is required!' });
 
 		// Find user with token
 		const user = await this.app.db.exec
 			?.collection('users')
 			.findOne({ token }) as User | null;
 
-		if (!user) return response.status(400).json({ message: 'Invalid token.' });
+		if (!user) return response.status(401).json({ message: 'Invalid token.' });
 
 		const { amount, type, description } = request.body;
 

@@ -11,28 +11,26 @@ export default class extends Route {
 
 	public async get(request: Request, response: Response): Promise<Response> {
 		const token = request.headers.authorization;
-		if (!token) return response.status(400).json({ message: 'Token is required!' });
 
 		// Find user with token
 		const user = await this.app.db.exec
 			?.collection('users')
 			.findOne({ token }) as User | null;
 
-		if (!user) return response.status(400).json({ message: 'Invalid token.' });
+		if (!user) return response.status(401).json({ message: 'Invalid token.' });
 
 		return response.json(user.group.users);
 	}
 
 	public async post(request: Request, response: Response): Promise<Response> {
 		const token = request.headers.authorization;
-		if (!token) return response.status(400).json({ message: 'Token is required!' });
 
 		// Find user with token
 		const user = await this.app.db.exec
 			?.collection('users')
 			.findOne({ token }) as User | null;
 
-		if (!user) return response.status(400).json({ message: 'Invalid token.' });
+		if (!user) return response.status(401).json({ message: 'Invalid token.' });
 
 		const { email: userEmail } = request.body;
 		if (!userEmail) return response.status(400).json({ message: 'User email is required!' });
@@ -63,14 +61,13 @@ export default class extends Route {
 
 	public async delete(request: Request, response: Response): Promise<Response> {
 		const token = request.headers.authorization;
-		if (!token) return response.status(400).json({ message: 'Token is required!' });
 
 		// Find user with token
 		const user = await this.app.db.exec
 			?.collection('users')
 			.findOne({ token }) as User | null;
 
-		if (!user) return response.status(400).json({ message: 'Invalid token.' });
+		if (!user) return response.status(401).json({ message: 'Invalid token.' });
 
 		const { id } = request.body;
 		if (!id) return response.status(400).json({ message: 'User ID is required!' });

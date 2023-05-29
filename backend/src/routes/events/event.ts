@@ -12,7 +12,7 @@ export default class extends Route {
 		const { eventID } = request.params;
 
 		const event = await this.app.db.get('events', eventID);
-		if (!event) return response.status(404).json({ message: 'Event not found' });
+		if (!event) return response.status(404).json({ message: 'Event not found.' });
 
 		// @ts-ignore
 		delete event._id;
