@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:proj/wallet.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const FestivalManagerApp());
@@ -14,6 +17,7 @@ class FestivalManagerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Festival Manager',
       theme: ThemeData(
         fontFamily: GoogleFonts.outfit().fontFamily,
@@ -26,13 +30,14 @@ class FestivalManagerApp extends StatelessWidget {
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
             padding: MaterialStateProperty.all<EdgeInsets>(
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Adjust padding
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             ),
             minimumSize: MaterialStateProperty.all<Size>(
-              const Size(120, 50), // Adjust minimum size
+              const Size(120, 50),
             ),
-            backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFFBD93F9)),
-            foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // Set button text color to white
+            backgroundColor:
+                MaterialStateProperty.all<Color>(const Color(0xFFBD93F9)),
+            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
           ),
         ),
       ),
@@ -49,6 +54,23 @@ class LoggedOutScreen extends StatefulWidget {
 class _LoggedOutScreenState extends State<LoggedOutScreen> {
   bool showLoginOverlay = false;
   bool showSignupOverlay = false;
+  String _token = '';
+
+  Future<void> _getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
+    setState(() {
+      _token = token;
+    });
+  }
+
+  Future<void> _setToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', token);
+    setState(() {
+      _token = token;
+    });
+  }
 
   void showLogin() {
     setState(() {
@@ -69,6 +91,80 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
     });
   }
 
+  void login(String email, String password) async {
+    final url = Uri.parse('https://social-summit.edid.dev/api/oauth/login');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({'email': email, 'password': password});
+    final response = await http.post(url, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Wallet(),
+        ),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Login Failed'),
+            content: const Text('Invalid email or password.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  void signup(String fullName, String email, String phoneNumber, String birthday, String password) async {
+    final url = Uri.parse('https://social-summit.edid.dev/api/users');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      'name': fullName,
+      'email': email,
+      'phone': phoneNumber,
+      'birthDate': birthday,
+      'password': password,
+    });
+    final response = await http.post(url, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Wallet(),
+        ),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Signup Failed'),
+            content: const Text('Failed to create an account.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,7 +181,7 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const[
+              children: const [
                 Text(
                   'Social',
                   style: TextStyle(
@@ -129,7 +225,8 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
                     ElevatedButton(
                       onPressed: showLogin,
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.withOpacity(0.3)),// Set button text color to black
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Colors.grey.withOpacity(0.3)),
                       ),
                       child: const Text('LOGIN'),
                     ),
@@ -145,27 +242,29 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
           ),
           if (showLoginOverlay || showSignupOverlay)
             BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3), // Adjust blur strength if needed
+              filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
               child: Container(
-                color: Colors.black.withOpacity(0.1), // Adjust the opacity if needed
+                color: Colors.black.withOpacity(0.1),
               ),
             ),
           if (showLoginOverlay)
             OverlayScreen(
               child: LoginScreen(
                 onClose: closeOverlay,
+                onLogin: login,
               ),
             ),
           if (showSignupOverlay)
-          OverlayScreen(
-            child: SignupScreen(
-              onClose: closeOverlay,
-              onShowLogin: () {
-                closeOverlay();
-                showLogin();
-              },              
+            OverlayScreen(
+              child: SignupScreen(
+                onClose: closeOverlay,
+                onShowLogin: () {
+                  closeOverlay();
+                  showLogin();
+                },
+                onSignup: signup,
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -180,14 +279,10 @@ class OverlayScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        // Prevent taps from propagating to the underlying screen
-      },
+      onTap: () {},
       child: Container(
         child: Center(
-          child: Container(
-            child: child
-          ),
+          child: Container(child: child),
         ),
       ),
     );
@@ -196,8 +291,9 @@ class OverlayScreen extends StatelessWidget {
 
 class LoginScreen extends StatelessWidget {
   final VoidCallback onClose;
+  final void Function(String email, String password) onLogin;
 
-  const LoginScreen({required this.onClose});
+  const LoginScreen({required this.onClose, required this.onLogin});
 
   void navigateToWallet(BuildContext context) {
     Navigator.push(
@@ -210,8 +306,12 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String email = '';
+    String password = '';
+
     return Container(
       child: Card(
+        color: const Color.fromARGB(255, 51, 60, 69),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
         ),
@@ -242,31 +342,33 @@ class LoginScreen extends StatelessWidget {
               ),
               Column(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
-                  SizedBox(height: 32),
+                children: [
+                  const SizedBox(height: 32),
                   TextField(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Email',
                       border: OutlineInputBorder(
-                            borderSide: BorderSide(),
-                        ),
+                        borderSide: BorderSide(),
+                      ),
                     ),
+                    onChanged: (value) => email = value,
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   TextField(
                     obscureText: true,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Password',
                       border: OutlineInputBorder(
-                            borderSide: BorderSide(),
-                        ),
+                        borderSide: BorderSide(),
+                      ),
                     ),
+                    onChanged: (value) => password = value,
                   ),
                 ],
               ),
               const SizedBox(height: 32),
               ElevatedButton(
-                onPressed: () => navigateToWallet(context),
+                onPressed: () => onLogin(email, password),
                 child: const Text('Login'),
               ),
             ],
@@ -280,14 +382,33 @@ class LoginScreen extends StatelessWidget {
 class SignupScreen extends StatelessWidget {
   final VoidCallback onClose;
   final VoidCallback onShowLogin;
+  final void Function(
+    String fullName,
+    String email,
+    String phoneNumber,
+    String address,
+    String password,
+  ) onSignup;
 
-  const SignupScreen({required this.onClose, required this.onShowLogin});
+  const SignupScreen({
+    required this.onClose,
+    required this.onShowLogin,
+    required this.onSignup,
+  });
 
   @override
   Widget build(BuildContext context) {
+    String name = '';
+    String email = '';
+    String phone = '';
+    String birthDate = '';
+    String password = '';
+    String confirmPassword = '';
+
     return Container(
       child: Center(
         child: Card(
+          color: const Color.fromARGB(255, 51, 60, 69),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.0),
           ),
@@ -317,65 +438,112 @@ class SignupScreen extends StatelessWidget {
                   ),
                 ),
                 Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(height: 16),
-                  const TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Full name',
-                      border: OutlineInputBorder(
-                            borderSide: BorderSide(),
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 16),
+                    TextField(
+                      decoration: const InputDecoration(
+                        labelText: 'Full name',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(),
                         ),
+                      ),
+                      onChanged: (value) => name = value,
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  const TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      border: OutlineInputBorder(
-                            borderSide: BorderSide(),
+                    const SizedBox(height: 8),
+                    TextField(
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(),
                         ),
+                      ),
+                      onChanged: (value) => email = value,
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  IntlPhoneField(
-                    decoration: const InputDecoration(
+                    const SizedBox(height: 8),
+                    IntlPhoneField(
+                      decoration: const InputDecoration(
                         labelText: 'Phone Number',
                         border: OutlineInputBorder(
-                            borderSide: BorderSide(),
+                          borderSide: BorderSide(),
                         ),
-                    ),
-                    initialCountryCode: 'PT',
-                    onChanged: (phone) {
-                        print(phone.completeNumber);
-                    },
-                  ),
-                  const SizedBox(height: 8),
-                  const TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(),
                       ),
+                      initialCountryCode: 'PT',
+                      onChanged: (phoneNum) {
+                        phone = phoneNum.completeNumber;
+                      },
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  const TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: 'Confirm password',
-                      border: OutlineInputBorder(
+                    const SizedBox(height: 8),
+                    TextField(
+                      decoration: const InputDecoration(
+                        labelText: 'Birthday',
+                        border: OutlineInputBorder(
                           borderSide: BorderSide(),
+                        ),
                       ),
+                      onChanged: (value) => birthDate = value,
                     ),
-                  ),
-                ],
-              ),
-                const SizedBox(height: 32),
+                    const SizedBox(height: 8),
+                    TextField(
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Password',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(),
+                        ),
+                      ),
+                      onChanged: (value) => password = value,
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Confirm password',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(),
+                        ),
+                      ),
+                      onChanged: (value) => confirmPassword = value,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
                 ElevatedButton(
+                  onPressed: () {
+                    if (password == confirmPassword) {
+                      onSignup(
+                        name,
+                        email,
+                        phone,
+                        birthDate,
+                        password,
+                      );
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Password Mismatch'),
+                            content: const Text('Passwords do not match.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  },
+                  child: const Text('SIGNUP'),
+                ),
+                // const SizedBox(height: 8),
+                TextButton(
                   onPressed: onShowLogin,
-                  child: const Text('Create account'),
+                  child: const Text('Already have an account? Login'),
                 ),
               ],
             ),
