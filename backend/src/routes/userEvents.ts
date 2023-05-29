@@ -6,16 +6,19 @@ import { User } from '../lib/User';
 export default class extends Route {
 
 	constructor(app: App, file: readonly string[]) {
-		super(app, file, { route: 'users/:userID/events', authenticated: true });
+		super(app, file, { route: 'events', authenticated: true });
 	}
 
 	public async get(request: Request, response: Response): Promise<Response> {
 		const token = request.headers.authorization;
-		const { userID } = request.params;
+		if (!token) return response.status(400).json({ message: 'Token is required!' });
 
-		const user = await this.app.db.get('users', userID) as User | null;
-		if (!user) return response.status(404).json({ message: 'User not found' });
-		if (user.token !== token) return response.status(401).json({ message: 'Access restricted.' });
+		// Find user with token
+		const user = await this.app.db.exec
+			?.collection('users')
+			.findOne({ token }) as User | null;
+
+		if (!user) return response.status(404).json({ message: 'Invalid token.' });
 
 		const events = await this.app.db.exec?.collection('events').find({ id: { $in: user.events } }).toArray();
 
