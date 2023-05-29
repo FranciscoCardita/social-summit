@@ -22,10 +22,18 @@ class _WalletState extends State<Wallet> {
   int _selectedIndex = 0;
   OverlayEntry? _overlayEntry;
   PaymentMethod? _paymentMethod = PaymentMethod.mbway;
+  String _walletID = '';
+  String _walletBalance = '€0.00';
 
   Future<String> _getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('token') ?? '';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchWallet();
   }
 
   void _onItemTapped(int index) {
@@ -63,15 +71,33 @@ class _WalletState extends State<Wallet> {
   }
 
   void _addFunds() {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return const AddFundsDialog();
-    },
-  );
-}
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const AddFundsDialog();
+      },
+    );
+  }
 
-  void _transactions() async {
+  Future<void> _fetchWallet() async {
+    final url = Uri.parse('https://social-summit.edid.dev/api/wallet');
+    final headers = {'Content-Type': 'application/json', 'Authorization': await _getToken()};
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      setState(() {
+        _walletID = jsonDecode(response.body)['id'];
+        _walletBalance = '€${jsonDecode(response.body)['balance']}';
+      });
+    } else {
+      setState(() {
+        _walletID = 'Error fetching wallet ID';
+        _walletBalance = '€0.00';
+      });
+    }
+  }
+
+  Future<void> _transactions() async {
     final url = Uri.parse('https://social-summit.edid.dev/api/wallet');
     final headers = {'Content-Type': 'application/json', 'Authorization': await _getToken()};
     final response = await http.get(url, headers: headers);
@@ -232,8 +258,8 @@ class _WalletState extends State<Wallet> {
                   Row(
                     children: [
                       const SizedBox(width: 16),
-                      const Text("€0.00",
-                        style: TextStyle(
+                      Text(_walletBalance,
+                        style: const TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w100,
                         ),
@@ -264,7 +290,7 @@ class _WalletState extends State<Wallet> {
                   const SizedBox(
                     height: 6,
                   ),
-                  const Text("99999999XXX9999"),
+                  Text(_walletID),
                   const SizedBox(height: 48),
                   SizedBox(
                     height: 40,
