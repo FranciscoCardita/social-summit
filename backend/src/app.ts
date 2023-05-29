@@ -1,13 +1,14 @@
-import { readdir } from 'fs/promises';
-import { join, relative, sep } from 'path';
+import { extname, join, relative, sep } from 'path';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv-override').config({ path: join(__dirname, '../', '.env') });
 
+import { scan } from 'fs-nextra';
 import Server from './express';
 import { Route } from './lib/Route';
 import { isClass } from './lib/Util';
 import Database from './mongodb';
+
 
 export class App {
 	public db: Database;
@@ -40,12 +41,12 @@ export class App {
 
 	private async registerRoutes(): Promise<void> {
 		const directory = join(__dirname, 'routes');
-		const files = await readdir(directory);
-		for (const file of files) {
+		const files = await scan(directory, { filter: (stats) => stats.isFile() && extname(stats.name) === '.js' });
+		for (const file of files.keys()) {
 			if (!file.endsWith('.js')) continue;
 			
-			const fileInfo = relative(__dirname, file).split(sep);
-			const loc = join(directory, file);
+			const fileInfo = relative(directory, file).split(sep);
+			const loc = join(directory, ...fileInfo);
 			
 			try {
 				const loaded = await import(loc) as { default: any } | any;
