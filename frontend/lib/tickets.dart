@@ -1,4 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'map.dart';
 import 'profile.dart';
 import 'wallet.dart';
@@ -31,6 +34,18 @@ class Tickets extends StatefulWidget {
 
 class _TicketsState extends State<Tickets> {
   int _selectedIndex = 1;
+  List<Ticket> _tickets = [];
+
+  Future<String> _getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token') ?? '';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchTickets();
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -66,36 +81,48 @@ class _TicketsState extends State<Tickets> {
     }
   }
 
+  Future<void> _fetchTickets() async {
+    final url = Uri.parse('https://social-summit.edid.dev/api/events');
+    final headers = {'Content-Type': 'application/json', 'Authorization': await _getToken()};
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        for (var ticket in data) {
+          final timestampStart = ticket['startDate'] as int;
+          final dateStart = DateTime.fromMillisecondsSinceEpoch(timestampStart);
+          final formattedDateStart = '${dateStart.day.toString().padLeft(2, '0')}-${dateStart.month.toString().padLeft(2, '0')}-${dateStart.year.toString()}';
+
+          final timestampEnd = ticket['endDate'] as int;
+          final dateEnd = DateTime.fromMillisecondsSinceEpoch(timestampEnd);
+          final formattedDateEnd = '${dateEnd.day.toString().padLeft(2, '0')}-${dateEnd.month.toString().padLeft(2, '0')}-${dateEnd.year.toString()}';
+
+          setState(() {
+              _tickets.add(Ticket(
+                eventName: ticket['name'],
+                startDate: formattedDateStart,
+                endDate: formattedDateEnd,
+                location: ticket['location'],
+                eventImage: ticket['image'].replaceFirst(RegExp('data:image/[^;]+;base64,'), ''),
+                ticketType: ticket['type'].toString().split('_').map((e) => e[0].toUpperCase() + e.substring(1).toLowerCase()).join(' '),
+              ));
+          });
+
+        }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<Ticket> tickets = [
-      Ticket(
-        eventName: 'Enterro 2023',
-        startDate: '22/04/2023',
-        endDate: '29/04/2023',
-        location: 'Universidade do Aveiro',
-        eventImage: 'assets/enterro.jpg',
-        ticketType: 'General Admission',
-      ),
-      Ticket(
-        eventName: 'Nos Alive 2023',
-        startDate: '6/06/2023',
-        endDate: '8/06/2023',
-        location: 'Passeio Maritimo de Algés',
-        eventImage: 'assets/nos.jpg',
-        ticketType: 'Daily',
-      ),
-    ];
-
     return Scaffold(
       extendBody: true,
       backgroundColor: const Color.fromRGBO(28, 32, 37, 100),
       body: Column(
         children: <Widget>[
           const SizedBox(height: 42),
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            children: const <Widget>[
+            children: <Widget>[
               SizedBox(width: 20),
               Text(
                 'Tickets',
@@ -119,11 +146,11 @@ class _TicketsState extends State<Tickets> {
               elevation: 4,
               child: ListView.builder(
                 padding: const EdgeInsets.all(8),
-                itemCount: tickets.length,
+                itemCount: _tickets.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
-                      _handleTicketClick(context, tickets[index]);
+                      _handleTicketClick(context, _tickets[index]);
                     },
                     child: Card(
                       color: const Color.fromARGB(255, 87, 95, 105),
@@ -132,12 +159,12 @@ class _TicketsState extends State<Tickets> {
                       ),
                       elevation: 4,
                       child: ListTile(
-                        title: Text(tickets[index].eventName),
+                        title: Text(_tickets[index].eventName),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${tickets[index].ticketType} Ticket',
+                              '${_tickets[index].ticketType} Ticket',
                               style: const TextStyle(
                                 color: Color(0xFFBD93F9),
                               )
@@ -153,7 +180,7 @@ class _TicketsState extends State<Tickets> {
                           child: IconButton(
                             icon: const Icon(Icons.calendar_today),
                             onPressed: () {
-                              _handleCalendarIconClick(context, tickets[index]);
+                              _handleCalendarIconClick(context, _tickets[index]);
                             },
                         ),
                         ),
@@ -191,7 +218,7 @@ class _TicketsState extends State<Tickets> {
           ),
           backgroundColor: const Color.fromARGB(255, 51, 60, 69),
           title: const Text('Lineup'),
-          content: Image.asset(ticket.eventImage),
+          content: Image.memory(base64.decode(ticket.eventImage)),
           actions: [
             TextButton(
               onPressed: () {
