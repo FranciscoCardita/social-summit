@@ -43,8 +43,6 @@ export class App {
 		const directory = join(__dirname, 'routes');
 		const files = await scan(directory, { filter: (stats) => stats.isFile() && extname(stats.name) === '.js' });
 		for (const file of files.keys()) {
-			if (!file.endsWith('.js')) continue;
-			
 			const fileInfo = relative(directory, file).split(sep);
 			const loc = join(directory, ...fileInfo);
 			
