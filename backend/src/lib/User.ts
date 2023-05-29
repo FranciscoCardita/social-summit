@@ -14,8 +14,8 @@ export enum EventType {
 export interface Event {
 	id: string;
 	name: string;
-	startDate: Date;
-	endDate: Date;
+	startDate: number;
+	endDate: number;
 	location: string;
 	image: string;
 	type: EventType;
@@ -26,7 +26,7 @@ export interface User {
 	name: string;
 	email: string;
 	password: string;
-	birthDate: Date;
+	birthDate: number;
 	phone: string;
 	wallet: Wallet;
 	group: Group;
