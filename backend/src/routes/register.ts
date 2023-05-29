@@ -32,7 +32,7 @@ export default class extends Route {
 			name,
 			email,
 			password: encrypt(password),
-			birthDate: new Date(birthDate),
+			birthDate: new Date(birthDate).getTime(),
 			phone,
 			wallet: {
 				id: SocialSummitSnowflake.generate().toString(),
