@@ -64,6 +64,8 @@ export default class Server {
 
 		if (route) request.params = route.execute(splitURL);
 
+		console.log('Incoming request:', request.method, info.pathname);
+
 		// Check if the user is authenticated
 		if (route?.authenticated) {
 			const token = request.headers.authorization;
