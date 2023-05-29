@@ -120,9 +120,9 @@ class _MapState extends State<MapScreen> {
       body: Column(
         children: <Widget>[
           const SizedBox(height: 42),
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            children: const <Widget>[
+            children: <Widget>[
               SizedBox(width: 20),
               Text(
                 'Map',
@@ -136,7 +136,7 @@ class _MapState extends State<MapScreen> {
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.5,
             child: Container(
-              width: double.infinity,
+              width: MediaQuery.of(context).size.width * 0.9,
               child: GoogleMap(
                   initialCameraPosition: const CameraPosition(
                     target: LatLng(40.631462, -8.663808),
@@ -169,12 +169,12 @@ class _MapState extends State<MapScreen> {
               ],
             ),
           ),
-          Row(
+          const Row(
             children: [
-              const SizedBox(width: 20),
+              SizedBox(width: 20),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
                     'Alice is coming to meet you',
                     style: TextStyle(
@@ -194,12 +194,12 @@ class _MapState extends State<MapScreen> {
             ],
           ),
           const SizedBox(height: 10),
-          Row(
+          const Row(
             children: [
-              const SizedBox(width: 20),
+              SizedBox(width: 20),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
                     'Bob and Jamal left the venue',
                     style: TextStyle(
