@@ -218,7 +218,10 @@ class _TicketsState extends State<Tickets> {
           ),
           backgroundColor: const Color.fromARGB(255, 51, 60, 69),
           title: const Text('Lineup'),
-          content: Image.memory(base64.decode(ticket.eventImage)),
+          content: Image.memory(
+            base64.decode(ticket.eventImage),
+            fit: BoxFit.cover,
+            ),
           actions: [
             TextButton(
               onPressed: () {
