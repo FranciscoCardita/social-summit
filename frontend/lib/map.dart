@@ -40,17 +40,17 @@ class _MapState extends State<MapScreen> {
   void initState() {
     super.initState();
     _addMarker(
-      LatLng(40.631462, -8.663808),
+      const LatLng(40.631462, -8.663808),
       'Alice',
       '50m',
     );
     _addMarker(
-      LatLng(40.632062, -8.662985),
+      const LatLng(40.632062, -8.662985),
       'Jamal',
       '130 m',
     );
     _addMarker(
-      LatLng(40.631850, -8.662545),
+      const LatLng(40.631850, -8.662545),
       'Bob',
       '130 m',
     );
@@ -116,7 +116,7 @@ class _MapState extends State<MapScreen> {
     ];
 
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(28, 32, 37, 100),
+      backgroundColor: const Color(0xFF151515),
       body: Column(
         children: <Widget>[
           const SizedBox(height: 42),
@@ -138,7 +138,7 @@ class _MapState extends State<MapScreen> {
             child: Container(
               width: double.infinity,
               child: GoogleMap(
-                  initialCameraPosition: CameraPosition(
+                  initialCameraPosition: const CameraPosition(
                     target: LatLng(40.631462, -8.663808),
                     zoom: 16,
                   ),
@@ -157,24 +157,24 @@ class _MapState extends State<MapScreen> {
                   onPressed: () {
                     showImageDialog(context);
                   },
-                  child: Text('Venue info'),
+                  child: const Text('Venue info'),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () {
                     showGroup(context, persons);
                   },
-                  child: Text('My group'),
+                  child: const Text('My group'),
                 ),
               ],
             ),
           ),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.only(right: 134),
-              child: Column(
+          Row(
+            children: [
+              const SizedBox(width: 20),
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: const [
                   Text(
                     'Alice is coming to meet you',
                     style: TextStyle(
@@ -191,16 +191,17 @@ class _MapState extends State<MapScreen> {
                   ),
                 ],
               ),
-            ),
+            ],
           ),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.only(right: 108),
-              child: Column(
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              const SizedBox(width: 20),
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: const [
                   Text(
-                    'Bob and Jamal are getting far',
+                    'Bob and Jamal left the venue',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -208,20 +209,20 @@ class _MapState extends State<MapScreen> {
                   ),
                   SizedBox(height: 7),
                   Text(
-                    '2:23 AM',
+                    '3:23 AM',
                     style: TextStyle(
                       fontSize: 16,
                     ),
                   ),
                 ],
               ),
-            ),
+            ],
           ),
         ],
       ),
       bottomNavigationBar: Container(
+        clipBehavior: Clip.hardEdge,
         decoration: const BoxDecoration(
-          color: Colors.white,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20.0),
             topRight: Radius.circular(20.0),
@@ -240,27 +241,33 @@ class _MapState extends State<MapScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('My Group'),
+          backgroundColor: const Color.fromARGB(255, 51, 60, 69),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          title: const Text('My Group'),
           content: SingleChildScrollView(
-            child: Container(
-              height: 300,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: persons.map((person) {
-                  return ListTile(
-                    title: Text(person.nome),
-                    subtitle: Text(person.distance),
-                    leading: SizedBox(
-                      width: 60,
-                      height: 60,
-                      child: Image.asset(
-                        person.personImage,
-                        fit: BoxFit.cover,
-                      ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: persons.map((person) {
+                return ListTile(
+                  contentPadding: const EdgeInsets.all(0),
+                  title: Text(person.nome),
+                  subtitle: Text(person.distance),
+                  leading: SizedBox(
+                    width: 60,
+                    height: 60,
+                    child: Image.asset(
+                      person.personImage,
+                      fit: BoxFit.cover,
                     ),
-                  );
-                }).toList(),
-              ),
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () {},
+                  ),
+                );
+              }).toList(),
             ),
           ),
           actions: [
@@ -268,13 +275,13 @@ class _MapState extends State<MapScreen> {
               onPressed: () {
                 addFriends(context);
               },
-              child: Text('Add Friends'),
+              child: const Text('Add Friends'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
@@ -286,23 +293,19 @@ class _MapState extends State<MapScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        String friendName;
         String friendEmail;
 
         return AlertDialog(
-          title: Text('Add Friends'),
+          backgroundColor: const Color.fromARGB(255, 51, 60, 69),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          title: const Text('Add Friends'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'Name'),
-                onChanged: (value) {
-                  friendName = value;
-                },
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: const InputDecoration(labelText: 'Email'),
                 onChanged: (value) {
                   friendEmail = value;
                 },
@@ -314,14 +317,14 @@ class _MapState extends State<MapScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Add'),
+              child: const Text('Add'),
             ),
             TextButton(
               onPressed: () {
                 // Close the dialog without adding the friend
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
           ],
         );
@@ -334,11 +337,10 @@ class _MapState extends State<MapScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: const Color.fromARGB(255, 51, 60, 69),
           title: const Text('Venue Info'),
           content: Image.asset(
             'assets/venue1.png',
-            width: 300,
-            height: 300,
           ),
           actions: [
             TextButton(
