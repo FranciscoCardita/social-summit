@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'tickets.dart';
 import 'map.dart';
 import 'profile.dart';
@@ -18,6 +22,11 @@ class _WalletState extends State<Wallet> {
   int _selectedIndex = 0;
   OverlayEntry? _overlayEntry;
   PaymentMethod? _paymentMethod = PaymentMethod.mbway;
+
+  Future<String> _getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token') ?? '';
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -57,74 +66,32 @@ class _WalletState extends State<Wallet> {
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      return AddFundsDialog();
+      return const AddFundsDialog();
     },
   );
 }
 
-  void _transactions() {
-    List<Map<String, String>> transactions = [
-      {
-        'date': '2023-05-25',
-        'item': 'Item 1',
-        'amount': '10.00',
-      },
-      {
-        'date': '2023-05-24',
-        'item': 'Item 2',
-        'amount': '20.00',
-      },
-      {
-        'date': '2023-05-23',
-        'item': 'Item 3',
-        'amount': '30.00',
-      },
-      {
-        'date': '2023-05-25',
-        'item': 'Item 1',
-        'amount': '10.00',
-      },
-      {
-        'date': '2023-05-24',
-        'item': 'Pão com chouriço',
-        'amount': '20.00',
-      },
-      {
-        'date': '2023-05-23',
-        'item': 'Item 3',
-        'amount': '30.00',
-      },
-      {
-        'date': '2023-05-25',
-        'item': 'Item 1',
-        'amount': '10.00',
-      },
-      {
-        'date': '2023-05-24',
-        'item': 'Item 2',
-        'amount': '20.00',
-      },
-      {
-        'date': '2023-05-23',
-        'item': 'Item 3',
-        'amount': '30.00',
-      },
-      {
-        'date': '2023-05-25',
-        'item': 'Item 1',
-        'amount': '10.00',
-      },
-      {
-        'date': '2023-05-24',
-        'item': 'Item 2',
-        'amount': '20.00',
-      },
-      {
-        'date': '2023-05-23',
-        'item': 'Item 3',
-        'amount': '30.00',
-      },
-    ];
+  void _transactions() async {
+    final url = Uri.parse('https://social-summit.edid.dev/api/wallet');
+    final headers = {'Content-Type': 'application/json', 'Authorization': await _getToken()};
+    final response = await http.get(url, headers: headers);
+
+    List<Map<String, String>> transactions = [];
+
+    if (response.statusCode == 200) {
+      final responseTransactions = jsonDecode(response.body)['transactions'];
+      for (var transaction in responseTransactions) {
+        final timestamp = transaction['date'] as int;
+        final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
+        final formattedDate = '${date.day.toString().padLeft(2, '0')}-${date.month.toString().padLeft(2, '0')}-${date.year.toString()}';
+
+        transactions.add({
+          'date': formattedDate,
+          'item': transaction['description'],
+          'amount': transaction['amount'].toString(),
+        });
+      }
+    }
 
     OverlayState? overlayState = Overlay.of(context);
     _overlayEntry = OverlayEntry(
@@ -235,9 +202,9 @@ class _WalletState extends State<Wallet> {
       body: Column(
         children: <Widget>[
           const SizedBox(height: 42),
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            children: const [
+            children: [
               SizedBox(width: 25),
               Text(
                 'Wallet',
