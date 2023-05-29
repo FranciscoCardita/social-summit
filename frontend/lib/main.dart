@@ -92,7 +92,7 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
   }
 
   void login(String email, String password) async {
-    final url = Uri.parse('https://social-summit.edid.dev/api/oauth/login');
+    final url = Uri.parse('https://social-summit.edid.dev/api/auth/login');
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({'email': email, 'password': password});
     final response = await http.post(url, headers: headers, body: body);
@@ -126,7 +126,7 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
   }
 
   void signup(String fullName, String email, String phoneNumber, String birthday, String password) async {
-    final url = Uri.parse('https://social-summit.edid.dev/api/users');
+    final url = Uri.parse('https://social-summit.edid.dev/api/auth/register');
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       'name': fullName,
@@ -141,7 +141,7 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Wallet(),
+          builder: (context) => const Wallet(),
         ),
       );
     } else {
