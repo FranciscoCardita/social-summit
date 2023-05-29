@@ -1,4 +1,5 @@
 import { METHODS, STATUS_CODES } from 'http';
+import cors from 'cors';
 import express, { Express, NextFunction, Request, Response } from 'express';
 import { App } from './app';
 import { split } from './lib/Util';
@@ -39,6 +40,7 @@ export default class Server {
 		this.app = app;
 		this.express = express();
 		this.express.use(express.json());
+		this.express.use(cors());
 		this.onNoMatch = this.onError.bind(this, { code: 404 });
 	}
 
