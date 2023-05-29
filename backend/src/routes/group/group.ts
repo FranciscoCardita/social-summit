@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import { App } from '../app';
-import { Route } from '../lib/Route';
-import { User } from '../lib/User';
+import { App } from '../../app';
+import { Route } from '../../lib/Route';
+import { User } from '../../lib/User';
 
 export default class extends Route {
 
 	constructor(app: App, file: readonly string[]) {
-		super(app, file, { route: 'wallet', authenticated: true });
+		super(app, file, { route: 'group', authenticated: true });
 	}
 
 	public async get(request: Request, response: Response): Promise<Response> {
@@ -20,7 +20,7 @@ export default class extends Route {
 
 		if (!user) return response.status(400).json({ message: 'Invalid token.' });
 
-		return response.json(user.wallet);
+		return response.json(user.group);
 	}
 
 }

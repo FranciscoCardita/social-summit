@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import { App } from '../app';
-import { Route } from '../lib/Route';
-import { encrypt, generateValidToken } from '../lib/Util';
+import { App } from '../../app';
+import { Route } from '../../lib/Route';
+import { encrypt, generateValidToken } from '../../lib/Util';
 
 export default class extends Route {
 
 	constructor(app: App, file: readonly string[]) {
-		super(app, file, { route: 'oauth/login' });
+		super(app, file, { route: 'auth/login' });
 	}
 
 	public async post(request: Request, response: Response): Promise<Response> {

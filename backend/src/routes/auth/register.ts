@@ -1,14 +1,14 @@
 import { Request, Response } from 'express';
-import { App } from '../app';
-import { Route } from '../lib/Route';
-import { SocialSummitSnowflake } from '../lib/Snowflake';
-import { User } from '../lib/User';
-import { encrypt, generateValidToken } from '../lib/Util';
+import { App } from '../../app';
+import { Route } from '../../lib/Route';
+import { SocialSummitSnowflake } from '../../lib/Snowflake';
+import { User } from '../../lib/User';
+import { encrypt, generateValidToken } from '../../lib/Util';
 
 export default class extends Route {
 
 	constructor(app: App, file: readonly string[]) {
-		super(app, file, { route: 'users', authenticated: false });
+		super(app, file, { route: 'auth/register', authenticated: false });
 	}
 
 	public async post(request: Request, response: Response): Promise<Response> {

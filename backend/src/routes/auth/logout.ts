@@ -1,26 +1,28 @@
 import { Request, Response } from 'express';
-import { App } from '../app';
-import { Route } from '../lib/Route';
-import { User } from '../lib/User';
+import { App } from '../../app';
+import { Route } from '../../lib/Route';
 
 export default class extends Route {
 
 	constructor(app: App, file: readonly string[]) {
-		super(app, file, { route: 'group', authenticated: true });
+		super(app, file, { route: 'auth/logout', authenticated: true });
 	}
 
-	public async get(request: Request, response: Response): Promise<Response> {
+	public async post(request: Request, response: Response): Promise<Response> {
 		const token = request.headers.authorization;
 		if (!token) return response.status(400).json({ message: 'Token is required!' });
 
 		// Find user with token
 		const user = await this.app.db.exec
 			?.collection('users')
-			.findOne({ token }) as User | null;
+			.findOne({ token });
 
 		if (!user) return response.status(400).json({ message: 'Invalid token.' });
 
-		return response.json(user.group);
+		// Clear token
+		await this.app.db.update('users', user.id, { token: undefined });
+
+		return response.json({ message: 'Logged out successfully.' });
 	}
 
 }

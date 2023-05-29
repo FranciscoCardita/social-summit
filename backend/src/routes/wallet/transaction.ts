@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { App } from '../app';
-import { Route } from '../lib/Route';
-import { SocialSummitSnowflake } from '../lib/Snowflake';
-import { User } from '../lib/User';
-import { Transaction, TransactionType } from '../lib/Wallet';
+import { App } from '../../app';
+import { Route } from '../../lib/Route';
+import { SocialSummitSnowflake } from '../../lib/Snowflake';
+import { User } from '../../lib/User';
+import { Transaction, TransactionType } from '../../lib/Wallet';
 
 export default class extends Route {
 
