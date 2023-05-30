@@ -22,7 +22,7 @@ class _WalletState extends State<Wallet> {
   OverlayEntry? _overlayEntry;
   PaymentMethod? _paymentMethod = PaymentMethod.mbway;
   String _walletID = '';
-  String _walletBalance = '€0.00';
+  String _walletBalance = '€0';
 
   Future<String> _getToken() async {
     final prefs = await SharedPreferences.getInstance();
@@ -85,7 +85,7 @@ class _WalletState extends State<Wallet> {
     } else {
       setState(() {
         _walletID = 'Error fetching wallet ID';
-        _walletBalance = '€0.00';
+        _walletBalance = '€0';
       });
     }
   }
