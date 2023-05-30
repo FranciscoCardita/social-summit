@@ -59,12 +59,6 @@ class _TicketsState extends State<Tickets> {
           MaterialPageRoute(builder: (context) => const Wallet())
         );
         break;
-      case 1:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const Tickets())
-        );
-        break;
       case 2:
         Navigator.push(
           context,

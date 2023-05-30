@@ -41,12 +41,6 @@ class _WalletState extends State<Wallet> {
     });
 
     switch (index) {
-      case 0:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const Wallet())
-        );
-        break;
       case 1:
         Navigator.push(
           context,

@@ -83,10 +83,6 @@ class _MapState extends State<MapScreen> {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => const Tickets()));
         break;
-      case 2:
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const MapScreen()));
-        break;
       case 3:
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => const Profile()));
@@ -135,7 +131,7 @@ class _MapState extends State<MapScreen> {
           ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.5,
-            child: Container(
+            child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.9,
               child: GoogleMap(
                   initialCameraPosition: const CameraPosition(
