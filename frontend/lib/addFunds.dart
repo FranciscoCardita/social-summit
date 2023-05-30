@@ -74,8 +74,6 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
     body: jsonEncode(transactionData),
   );
   
-  Wallet w = new Wallet();
-
   if (response.statusCode == 200) {
     print('Transaction successful');
     widget.fetchWalletCallback?.call();
