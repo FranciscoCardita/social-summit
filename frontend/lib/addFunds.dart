@@ -1,16 +1,22 @@
-import 'package:flutter/foundation.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'wallet.dart';
 
 class AddFundsDialog extends StatefulWidget {
-  const AddFundsDialog({Key? key}) : super(key: key);
+   final Function()? fetchWalletCallback;
+
+    const AddFundsDialog({this.fetchWalletCallback, Key? key}) : super(key: key);
 
   @override
   _AddFundsDialogState createState() => _AddFundsDialogState();
 }
 
 class _AddFundsDialogState extends State<AddFundsDialog> {
+  final wallet = const Wallet();
   bool? get _validateAmount {
     final text = _amountController.value.text;
     if (text.isNotEmpty) {
@@ -44,6 +50,40 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
     _amountController.dispose();
     super.dispose();
   }
+
+  Future<String> _getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token') ?? '';
+  }
+
+  Future<void> _makeTransaction() async {
+  final url = Uri.parse('https://social-summit.edid.dev/api/wallet/transaction');
+  final headers = {
+    'Content-Type': 'application/json',
+    'Authorization': await _getToken(),
+  };
+
+  final transactionData = {
+    'amount': double.parse(_amountController.text),
+    'type': "TOPUP"
+  };
+
+  final response = await http.post(
+    url,
+    headers: headers,
+    body: jsonEncode(transactionData),
+  );
+  
+  Wallet w = new Wallet();
+
+  if (response.statusCode == 200) {
+    print('Transaction successful');
+    widget.fetchWalletCallback?.call();
+  } else {
+    print('Transaction failed');
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -150,9 +190,7 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          onPressed: () => Navigator.of(context).pop(),
           child: const Text('Cancel'),
         ),
         ElevatedButton(
@@ -160,6 +198,7 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
             if (_amountController.value.text.isEmpty || double.parse(_amountController.value.text) < 1) {
               return;
             }
+            _makeTransaction();
             Navigator.of(context).pop();
           },
           child: const Text('Confirm'),

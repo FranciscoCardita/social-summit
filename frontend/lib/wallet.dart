@@ -67,7 +67,7 @@ class _WalletState extends State<Wallet> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const AddFundsDialog();
+        return AddFundsDialog(fetchWalletCallback: _fetchWallet);
       },
     );
   }
