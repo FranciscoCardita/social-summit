@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'tickets.dart';
 import 'profile.dart';
 import 'wallet.dart';
 import 'navbar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Person {
-  final String nome;
-  final String distance;
-  final String personImage;
+  final String id;
+  final String name;
+  final String avatar;
 
   Person({
-    required this.nome,
-    required this.distance,
-    required this.personImage,
+    required this.id,
+    required this.name,
+    required this.avatar,
   });
 }
 
@@ -32,6 +35,7 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapState extends State<MapScreen> {
+  List<Person> group = [];
   int _selectedIndex = 2;
   GoogleMapController? _mapController;
   Set<Marker> _markers = {};
@@ -54,6 +58,7 @@ class _MapState extends State<MapScreen> {
       'Bob',
       '130 m',
     );
+    getGroup();
   }
 
   void _addMarker(LatLng position, String title, String snippet) {
@@ -93,24 +98,6 @@ class _MapState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<Person> persons = [
-      Person(
-        nome: 'Alice',
-        distance: '50m ',
-        personImage: 'assets/alice.jpg',
-      ),
-      Person(
-        nome: 'Jamal',
-        distance: '130 m',
-        personImage: 'assets/jamal.jpg',
-      ),
-      Person(
-        nome: 'Bob',
-        distance: '130 m',
-        personImage: 'assets/bob.jpg',
-      ),
-    ];
-
     return Scaffold(
       backgroundColor: const Color(0xFF151515),
       body: Column(
@@ -158,7 +145,7 @@ class _MapState extends State<MapScreen> {
                 const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () {
-                    showGroup(context, persons);
+                    showGroup(context, group);
                   },
                   child: const Text('My group'),
                 ),
@@ -232,7 +219,40 @@ class _MapState extends State<MapScreen> {
     );
   }
 
-  void showGroup(BuildContext context, List<Person> persons) {
+  Future<String> _getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token') ?? '';
+  }
+
+  Future<void> getGroup() async {
+    final url = Uri.parse('https://social-summit.edid.dev/api/group');
+    final groupHeaders = {
+      'Content-Type': 'application/json',
+      'Authorization': await _getToken()
+    };
+    final response = await http.get(url, headers: groupHeaders);
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body)['users'];
+      for (var response in jsonResponse) {
+        final id = response['id'];
+        final name = response['name'];
+        final avatar = response['avatar']
+            .replaceFirst(RegExp('data:image/[^;]+;base64,'), '');
+        final element = Person(id: id, name: name, avatar: avatar);
+        if (!group.any((e) => e.id == id)) {
+          setState(() {
+            group.add(element);
+          });
+        }
+      }
+    } else {
+      print('Failed to load group');
+    }
+  }
+
+  void showGroup(BuildContext context, List<Person> group) {
+    getGroup();
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -245,16 +265,15 @@ class _MapState extends State<MapScreen> {
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: persons.map((person) {
+              children: group.map((person) {
                 return ListTile(
                   contentPadding: const EdgeInsets.all(0),
-                  title: Text(person.nome),
-                  subtitle: Text(person.distance),
+                  title: Text(person.name),
                   leading: SizedBox(
                     width: 60,
                     height: 60,
-                    child: Image.asset(
-                      person.personImage,
+                    child: Image.memory(
+                      base64.decode(person.avatar),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -289,7 +308,7 @@ class _MapState extends State<MapScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        String friendEmail;
+        String friendEmail = '';
 
         return AlertDialog(
           backgroundColor: const Color.fromARGB(255, 51, 60, 69),
@@ -311,13 +330,14 @@ class _MapState extends State<MapScreen> {
           actions: [
             TextButton(
               onPressed: () {
+                addUser(friendEmail);
+                Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
               child: const Text('Add'),
             ),
             TextButton(
               onPressed: () {
-                // Close the dialog without adding the friend
                 Navigator.of(context).pop();
               },
               child: const Text('Cancel'),
@@ -326,6 +346,25 @@ class _MapState extends State<MapScreen> {
         );
       },
     );
+  }
+
+  Future<void> addUser(String email) async {
+    final url = Uri.parse('https://social-summit.edid.dev/api/group/users');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': await _getToken()
+    };
+    final response = await http.post(
+      url,
+      headers: headers,
+      body: jsonEncode(<String, String>{'email': email}),
+    );
+
+    if (response.statusCode == 200) {
+      getGroup();
+    } else {
+      print('Failed to add user');
+    }
   }
 
   void showImageDialog(BuildContext context) {
