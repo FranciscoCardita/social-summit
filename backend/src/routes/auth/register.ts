@@ -36,7 +36,7 @@ export default class extends Route {
 			password: encrypt(password),
 			birthDate: new Date(birthDate).getTime(),
 			phone,
-			avatar: `data:image/png;base64,${readFileSync(join(__dirname, '../', '../', '../', 'src', 'lib', 'assets', 'no-avatar.jpeg')).toString('base64')}`,
+			avatar: `data:image/png;base64,${readFileSync(join(__dirname, '../', '../', '../', 'src', 'lib', 'assets', 'no-avatar.png')).toString('base64')}`,
 			wallet: {
 				id: SocialSummitSnowflake.generate().toString(),
 				balance: 0,
