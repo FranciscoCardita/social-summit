@@ -247,7 +247,62 @@ class _MapState extends State<MapScreen> {
         }
       }
     } else {
-      print('Failed to load group');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Failed to load group'),
+            content: const Text('Something went wrong.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  Future<void> addUser(String email) async {
+    final url = Uri.parse('https://social-summit.edid.dev/api/group/users');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': await _getToken()
+    };
+    final response = await http.post(
+      url,
+      headers: headers,
+      body: jsonEncode(<String, String>{'email': email}),
+    );
+
+    if (response.statusCode == 200) {
+      await getGroup();
+    } else {
+      print('Failed to add user');
+    }
+  }
+
+  Future<void> removeUser(String id) async {
+    final url = Uri.parse('https://social-summit.edid.dev/api/group/users');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': await _getToken()
+    };
+    final response = await http.delete(
+      url,
+      headers: headers,
+      body: jsonEncode(<String, String>{'id': id}),
+    );
+
+    if (response.statusCode == 200) {
+      getGroup();
+      group.removeWhere((element) => element.id == id);
+    } else {
+      print('Failed to remove user');
     }
   }
 
@@ -279,7 +334,12 @@ class _MapState extends State<MapScreen> {
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.close),
-                    onPressed: () {},
+                    onPressed: () async {
+                      await removeUser(person.id);
+                      // Reload this children to update the list
+                      Navigator.of(context).pop();
+                      showGroup(context, group);
+                    },
                   ),
                 );
               }).toList(),
@@ -329,10 +389,11 @@ class _MapState extends State<MapScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                addUser(friendEmail);
+              onPressed: () async {
+                await addUser(friendEmail);
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
+                showGroup(context, group);
               },
               child: const Text('Add'),
             ),
@@ -346,25 +407,6 @@ class _MapState extends State<MapScreen> {
         );
       },
     );
-  }
-
-  Future<void> addUser(String email) async {
-    final url = Uri.parse('https://social-summit.edid.dev/api/group/users');
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': await _getToken()
-    };
-    final response = await http.post(
-      url,
-      headers: headers,
-      body: jsonEncode(<String, String>{'email': email}),
-    );
-
-    if (response.statusCode == 200) {
-      getGroup();
-    } else {
-      print('Failed to add user');
-    }
   }
 
   void showImageDialog(BuildContext context) {
