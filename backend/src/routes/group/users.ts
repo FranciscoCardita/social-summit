@@ -50,6 +50,7 @@ export default class extends Route {
 					{
 						id: invitedUser.id,
 						name: invitedUser.name,
+						avatar: invitedUser.avatar
 					}
 				],
 				notifications: user.group.notifications

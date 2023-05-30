@@ -1,3 +1,5 @@
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import { Request, Response } from 'express';
 import { App } from '../../app';
 import { Route } from '../../lib/Route';
@@ -34,6 +36,7 @@ export default class extends Route {
 			password: encrypt(password),
 			birthDate: new Date(birthDate).getTime(),
 			phone,
+			avatar: `data:image/png;base64,${readFileSync(join(__dirname, '../', '../', '../', 'src', 'lib', 'assets', 'no-avatar.jpeg')).toString('base64')}`,
 			wallet: {
 				id: SocialSummitSnowflake.generate().toString(),
 				balance: 0,

@@ -28,6 +28,7 @@ export interface User {
 	password: string;
 	birthDate: number;
 	phone: string;
+	avatar?: string;
 	wallet: Wallet;
 	group: Group;
 	localization: Localization;

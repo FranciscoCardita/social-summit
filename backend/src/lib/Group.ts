@@ -14,6 +14,7 @@ export interface Notification {
 export interface BasicUser {
 	id: string;
 	name: string;
+	avatar?: string;
 }
 
 export interface Group {
