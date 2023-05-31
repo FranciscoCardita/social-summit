@@ -99,6 +99,7 @@ class _MapState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xFF151515),
       body: Column(
         children: <Widget>[
@@ -376,16 +377,19 @@ class _MapState extends State<MapScreen> {
             borderRadius: BorderRadius.circular(8),
           ),
           title: const Text('Add Friends'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Email'),
-                onChanged: (value) {
-                  friendEmail = value;
-                },
-              ),
-            ],
+          content: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Email'),
+                  onChanged: (value) {
+                    friendEmail = value;
+                  },
+                ),
+              ],
+            ),
           ),
           actions: [
             TextButton(
