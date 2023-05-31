@@ -454,6 +454,88 @@ If the remove user fails, the server will respond with an appropriate error stat
 
 ## User Routes
 
+### GET /api/users/me
+
+Retrieves the user.
+
+#### Request Headers
+
+| Field          | Type   | Required | Description       |
+| -------------- | ------ | -------- | ----------------- |
+| Authorization  | string | Yes      | The user's token. |
+
+#### Response
+
+##### Success
+
+If the user is retrieved successfully, the server will respond with a 200 OK status code and a JSON object containing the user:
+
+```json
+{
+  "id": "1234567890",
+  "name": "Mary",
+  "email": "mary@gmail.com",
+  "birthDate": 1631234567890,
+  "phone": "1234567890",
+  "wallet": {
+    "id": "1234567890",
+    "balance": 100,
+    "transactions": [
+      {
+        "id": "1234567890",
+        "date": 1631234567890,
+        "amount": 50,
+        "type": "TOPUP",
+        "description": "Top UP."
+      },
+      {
+        "id": "0987654321",
+        "date": 1631234567890,
+        "amount": 1,
+        "type": "PAYMENT",
+        "description": "Beer."
+      }
+    ]
+  },
+  "group": {
+    "users": [
+      {
+        "id": "1234567890",
+        "name": "Mary"
+      },
+      {
+        "id": "0987654321",
+        "name": "John"
+      }
+    ],
+    "notifications": [
+      {
+        "id": "1234567890",
+        "date": 1631234567890,
+        "type": "PAYMENT",
+        "description": "Beer."
+      }
+    ]
+  },
+  "localization": {
+    "latitude": 0,
+    "longitude": 0
+  },
+  "events": ["53622671572733952", "53622671572733953"],
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+##### Error
+
+If something went wrong, the server will respond with an appropriate error status code and an error message:
+
+| Status Code | Message                       | Description                                             |
+| ----------- | ----------------------------- | ------------------------------------------------------- |
+| 401         | Unauthorized.                 | The `Authorization` header is missing from the request. |
+| 401         | Invalid token.                | The `Authorization` header contains an invalid token.   |
+| 500         | Internal server error.        | An internal server error occurred.                      |
+
 ### GET /api/users/:userID
 
 Retrieves a user.
@@ -534,7 +616,7 @@ If the user is retrieved successfully, the server will respond with a 200 OK sta
 
 ##### Error
 
-If the user is not found, the server will respond with a 404 Not Found status code and an error message:
+If the user is not found, the server will respond with an appropriate error status code and an error message:
 
 | Status Code | Message                       | Description                                             |
 | ----------- | ----------------------------- | ------------------------------------------------------- |
