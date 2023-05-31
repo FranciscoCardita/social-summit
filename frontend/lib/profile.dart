@@ -1,4 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'navbar.dart';
 import 'tickets.dart';
 import 'map.dart';
@@ -14,6 +17,46 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   int _selectedIndex = 3;
+  String _name = '';
+  String _email = '';
+  String _avatar = '';
+
+  Future<String> _getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token') ?? '';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUser();
+  }
+
+  Future<void> _fetchUser() async {
+    final url = Uri.parse('https://social-summit.edid.dev/api/users/me');
+    final headers = {'Content-Type': 'application/json', 'Authorization': await _getToken()};
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          _name = data['name'];
+          _email = data['email'];
+          _avatar = data['avatar'].replaceFirst(RegExp('data:image/[^;]+;base64,'), '');
+        });
+    }
+  }
+
+  Future<void> logout() async {
+    final url = Uri.parse('https://social-summit.edid.dev/api/auth/logout');
+    final headers = {'Content-Type': 'application/json', 'Authorization': await _getToken()};
+    final response = await http.post(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      final prefs = await SharedPreferences.getInstance();
+      prefs.remove('token');
+    }
+  }
 
   void navigateToMain(BuildContext context) {
     Navigator.push(
@@ -55,9 +98,9 @@ class _ProfileState extends State<Profile> {
       body: Column(
         children: <Widget>[
           const SizedBox(height: 42),
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            children: const [
+            children: [
               SizedBox(width: 25),
               Text(
                 'Profile',
@@ -81,19 +124,21 @@ class _ProfileState extends State<Profile> {
               child: Column(
                 children: [
                   const SizedBox(height: 32),
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 50,
-                    backgroundImage: AssetImage('assets/croco.jpeg'),
+                    backgroundImage: Image.memory(
+                      base64Decode(_avatar),
+                    ).image
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'John Doe',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  Text(
+                    _name,
+                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'john.doe@example.com',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                   Text(
+                    _email,
+                    style: const TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                   const SizedBox(height: 32),
                   SizedBox(
@@ -136,7 +181,10 @@ class _ProfileState extends State<Profile> {
                     height: 35,
                     width: 260,
                     child: ElevatedButton(
-                      onPressed: () => navigateToMain(context),
+                      onPressed: ()  {
+                        logout();
+                        navigateToMain(context);
+                      },
                       style: ButtonStyle(
                         backgroundColor:
                             MaterialStateProperty.all<Color>(Colors.red),
