@@ -145,6 +145,7 @@ class _MapState extends State<MapScreen> {
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton(
+                  key: const Key('map_group_button'),
                   onPressed: () {
                     showGroup(context, group);
                   },
@@ -323,6 +324,7 @@ class _MapState extends State<MapScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: group.map((person) {
                 return ListTile(
+                  key: Key('map_group_friend_${person.name}'),
                   contentPadding: const EdgeInsets.all(0),
                   title: Text(person.name),
                   leading: SizedBox(
@@ -334,6 +336,7 @@ class _MapState extends State<MapScreen> {
                     ),
                   ),
                   trailing: IconButton(
+                    key: Key('map_group_remove_friend_${person.name}'),
                     icon: const Icon(Icons.close),
                     onPressed: () async {
                       await removeUser(person.id);
@@ -348,12 +351,14 @@ class _MapState extends State<MapScreen> {
           ),
           actions: [
             TextButton(
+              key: const Key('map_group_add_friends_button'),
               onPressed: () {
                 addFriends(context);
               },
               child: const Text('Add Friends'),
             ),
             TextButton(
+              key: const Key('map_group_close_button'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -383,6 +388,7 @@ class _MapState extends State<MapScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextFormField(
+                  key: const Key('map_group_add_friends_email_field'),
                   decoration: const InputDecoration(labelText: 'Email'),
                   onChanged: (value) {
                     friendEmail = value;
@@ -393,6 +399,7 @@ class _MapState extends State<MapScreen> {
           ),
           actions: [
             TextButton(
+              key: const Key('map_group_add_friends_add_button'),
               onPressed: () async {
                 await addUser(friendEmail);
                 Navigator.of(context).pop();
