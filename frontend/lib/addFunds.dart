@@ -106,9 +106,9 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
               ),
             ),
             ListTile(
-              key: const Key('wallet_card'),
               title: const Text('Card'),
               leading: Radio(
+                key: const Key('wallet_card'),
                 value: 'Card',
                 groupValue: _paymentMethod,
                 onChanged: _handlePaymentMethodChange,
@@ -143,12 +143,8 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
                           key: const Key('wallet_expiry_field'),
                           controller: _expiryDateController,
                           decoration:
-                              const InputDecoration(labelText: 'Expiry Date'),
+                              const InputDecoration(labelText: 'Expiry Date (mm-yy)'),
                           keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(5),
-                            _ExpiryDateInputFormatter(),
-                          ],
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -211,23 +207,5 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
         ),
       ],
     );
-  }
-}
-
-
-class _ExpiryDateInputFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    final text = newValue.text;
-
-    if (text.length == 2 && oldValue.text.length < 3) {
-      return TextEditingValue(
-        text: '$text-',
-        selection: TextSelection.collapsed(offset: text.length + 1),
-      );
-    }
-
-    return newValue;
   }
 }

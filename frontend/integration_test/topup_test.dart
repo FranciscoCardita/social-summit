@@ -19,14 +19,14 @@ void main() {
     await tester.enterText(find.byKey(const Key('login_password_field')), 'test123');
 
     await tester.tap(find.byKey(const Key('login_submit_button')));
-    await tester.pumpAndSettle(const Duration(seconds: 5));
+    await tester.pumpAndSettle(const Duration(seconds: 3));
 
     expect(find.byKey(const Key('walletTitle')), findsOneWidget);
 
     // Top up - MB Way
     final balanceFinder = find.byKey(const Key('wallet_balance'));
     final balanceText = (tester.widget<Text>(balanceFinder)).data;
-    final balance = double.parse(balanceText!.substring(0, balanceText.length - 2));
+    final balance = double.parse(balanceText!.substring(1, balanceText.length));
 
     await tester.tap(find.byKey(const Key('wallet_add_funds_button')));
     await tester.pumpAndSettle();
@@ -37,12 +37,14 @@ void main() {
 
     await tester.tap(find.byKey(const Key('wallet_confirm_button')));
     await tester.pumpAndSettle(const Duration(seconds: 5));
+    await Future.delayed(const Duration(seconds: 3));
 
     expect(find.byKey(const Key('walletTitle')), findsOneWidget);
     
     final newBalanceFinder = find.byKey(const Key('wallet_balance'));
     final newBalanceText = (tester.widget<Text>(newBalanceFinder)).data;
-    final newBalance = double.parse(newBalanceText!.substring(0, newBalanceText.length - 2));
+    final newBalance = double.parse(newBalanceText!.substring(1, newBalanceText.length));
+    await Future.delayed(const Duration(seconds: 3));
     expect(newBalance, balance + 10);
 
     // Top up - Credit Card
@@ -50,6 +52,7 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('wallet_card')));
+    await Future.delayed(const Duration(seconds: 3));
     await tester.enterText(find.byKey(const Key('wallet_card_field')), '123456789');
     await tester.enterText(find.byKey(const Key('wallet_expiry_field')), '10-23');
     await tester.enterText(find.byKey(const Key('wallet_security_field')), '123');
@@ -62,7 +65,7 @@ void main() {
 
     final newBalanceFinder2 = find.byKey(const Key('wallet_balance'));
     final newBalanceText2 = (tester.widget<Text>(newBalanceFinder2)).data;
-    final newBalance2 = double.parse(newBalanceText2!.substring(0, newBalanceText2.length - 2));
+    final newBalance2 = double.parse(newBalanceText2!.substring(1, newBalanceText2.length));
     expect(newBalance2, newBalance + 10);
   });
   

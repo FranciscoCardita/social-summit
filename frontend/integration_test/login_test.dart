@@ -18,7 +18,7 @@ void main() {
     await tester.enterText(find.byKey(const Key('login_password_field')), 'test123');
 
     await tester.tap(find.byKey(const Key('login_submit_button')));
-    await tester.pumpAndSettle(const Duration(seconds: 5));
+    await tester.pumpAndSettle(const Duration(seconds: 2));
 
     expect(find.byKey(const Key('walletTitle')), findsOneWidget);
   });
