@@ -252,7 +252,9 @@ class _WalletState extends State<Wallet> {
                   Row(
                     children: [
                       const SizedBox(width: 16),
-                      Text(_walletBalance,
+                      Text(
+                        _walletBalance,
+                        key: const Key('wallet_balance'),
                         style: const TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w100,
@@ -267,6 +269,7 @@ class _WalletState extends State<Wallet> {
                               height: 40,
                               width: 100,
                               child: ElevatedButton(
+                                key: const Key('wallet_add_funds_button'),
                                 onPressed: _addFunds,
                                 child: const Text('Add Funds'),
                               ),

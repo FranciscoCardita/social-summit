@@ -97,6 +97,7 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
+              key: const Key('wallet_mbway'),
               title: const Text('MBWay'),
               leading: Radio(
                 value: 'MBWay',
@@ -105,6 +106,7 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
               ),
             ),
             ListTile(
+              key: const Key('wallet_card'),
               title: const Text('Card'),
               leading: Radio(
                 value: 'Card',
@@ -114,6 +116,7 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
             ),
             if (_paymentMethod == 'MBWay')
               IntlPhoneField(
+                key: const Key('wallet_phone_field'),
                 decoration: const InputDecoration(
                   labelText: 'Phone Number',
                 ),
@@ -128,6 +131,7 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
               Column(
                 children: [
                   TextFormField(
+                    key: const Key('wallet_card_field'),
                     controller: _cardNumberController,
                     decoration: const InputDecoration(labelText: 'Card Number'),
                     keyboardType: TextInputType.number,
@@ -136,6 +140,7 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
                     children: [
                       Expanded(
                         child: TextFormField(
+                          key: const Key('wallet_expiry_field'),
                           controller: _expiryDateController,
                           decoration:
                               const InputDecoration(labelText: 'Expiry Date'),
@@ -149,6 +154,7 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: TextFormField(
+                          key: const Key('wallet_security_field'),
                           controller: _securityNumberController,
                           decoration:
                               const InputDecoration(labelText: 'Sec Number'),
@@ -165,6 +171,7 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
             const SizedBox(height: 16),
             Form(
               child: TextFormField(
+                key: const Key('wallet_amount_field'),
                 controller: _amountController,
                 decoration: const InputDecoration(
                   labelText: 'Amount',
@@ -192,6 +199,7 @@ class _AddFundsDialogState extends State<AddFundsDialog> {
           child: const Text('Cancel'),
         ),
         ElevatedButton(
+          key: const Key('wallet_confirm_button'),
           onPressed: () {
             if (_amountController.value.text.isEmpty || double.parse(_amountController.value.text) < 1) {
               return;
