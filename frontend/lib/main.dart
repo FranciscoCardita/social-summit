@@ -137,7 +137,6 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
       'birthDate': birthday,
       'password': password,
     });
-    print(birthday);
     final response = await http.post(url, headers: headers, body: body);
 
     if (response.statusCode == 200) {
