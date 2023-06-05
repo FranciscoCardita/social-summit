@@ -109,6 +109,7 @@ class _TicketsState extends State<Tickets> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       extendBody: true,
       backgroundColor: const Color.fromRGBO(28, 32, 37, 100),
       body: Column(
@@ -249,8 +250,11 @@ class _TicketsState extends State<Tickets> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(
-              'assets/qr.png',
+            Center(
+              child: Image.asset(
+                'assets/qr.png',
+                height: 200,
+              ),
             ),
             const SizedBox(height: 16),
             Row(
