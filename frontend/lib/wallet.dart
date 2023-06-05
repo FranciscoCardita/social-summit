@@ -227,6 +227,7 @@ class _WalletState extends State<Wallet> {
               SizedBox(width: 25),
               Text(
                 'Wallet',
+                key: Key('walletTitle'),
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.w100,

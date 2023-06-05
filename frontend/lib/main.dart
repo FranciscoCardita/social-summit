@@ -137,6 +137,7 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
       'birthDate': birthday,
       'password': password,
     });
+    print(birthday);
     final response = await http.post(url, headers: headers, body: body);
 
     if (response.statusCode == 200) {
@@ -182,10 +183,10 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
               fit: BoxFit.cover,
             ),
           ),
-          Center(
+          const Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Text(
                   'Social',
                   style: TextStyle(
@@ -227,6 +228,7 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
+                      key: const Key('login_button'),
                       onPressed: showLogin,
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
@@ -236,6 +238,7 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
                     ),
                     const SizedBox(width: 16),
                     ElevatedButton(
+                      key: const Key('signup_button'),
                       onPressed: showSignup,
                       child: const Text('SIGNUP'),
                     ),
@@ -278,7 +281,7 @@ class _LoggedOutScreenState extends State<LoggedOutScreen> {
 class OverlayScreen extends StatelessWidget {
   final Widget child;
 
-  const OverlayScreen({required this.child});
+  const OverlayScreen({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -349,6 +352,7 @@ class LoginScreen extends StatelessWidget {
                 children: [
                   const SizedBox(height: 32),
                   TextField(
+                    key: const Key('login_email_field'),
                     decoration: const InputDecoration(
                       labelText: 'Email',
                       border: OutlineInputBorder(
@@ -359,6 +363,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   TextField(
+                    key: const Key('login_password_field'),
                     obscureText: true,
                     decoration: const InputDecoration(
                       labelText: 'Password',
@@ -372,6 +377,7 @@ class LoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: 32),
               ElevatedButton(
+                key: const Key('login_submit_button'),
                 onPressed: () => onLogin(email, password),
                 child: const Text('Login'),
               ),
@@ -394,7 +400,7 @@ class SignupScreen extends StatelessWidget {
     String password,
   ) onSignup;
 
-  const SignupScreen({
+  const SignupScreen({super.key, 
     required this.onClose,
     required this.onShowLogin,
     required this.onSignup,
@@ -446,6 +452,7 @@ class SignupScreen extends StatelessWidget {
                   children: [
                     const SizedBox(height: 16),
                     TextField(
+                      key: const Key('signup_name_field'),
                       decoration: const InputDecoration(
                         labelText: 'Full name',
                         border: OutlineInputBorder(
@@ -456,6 +463,7 @@ class SignupScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     TextField(
+                      key: const Key('signup_email_field'),
                       decoration: const InputDecoration(
                         labelText: 'Email',
                         border: OutlineInputBorder(
@@ -466,6 +474,7 @@ class SignupScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     IntlPhoneField(
+                      key: const Key('signup_phone_field'),
                       decoration: const InputDecoration(
                         labelText: 'Phone Number',
                         border: OutlineInputBorder(
@@ -478,17 +487,17 @@ class SignupScreen extends StatelessWidget {
                       },
                     ),
                     const SizedBox(height: 8),
-                    TextField(
-                      decoration: const InputDecoration(
-                        labelText: 'Birthday',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(),
-                        ),
-                      ),
-                      onChanged: (value) => birthDate = value,
+                    InputDatePickerFormField(
+                      key: const Key('signup_birthday_field'),
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime.now(),
+                      fieldLabelText: 'Birthday',
+                      onDateSubmitted: (value) => birthDate = value.toString(),
                     ),
                     const SizedBox(height: 8),
                     TextField(
+                      key: const Key('signup_password_field'),
                       obscureText: true,
                       decoration: const InputDecoration(
                         labelText: 'Password',
@@ -500,6 +509,7 @@ class SignupScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     TextField(
+                      key: const Key('signup_confirm_password_field'),
                       obscureText: true,
                       decoration: const InputDecoration(
                         labelText: 'Confirm password',
@@ -513,6 +523,7 @@ class SignupScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
+                  key: const Key('signup_submit_button'),
                   onPressed: () {
                     if (password == confirmPassword) {
                       onSignup(
