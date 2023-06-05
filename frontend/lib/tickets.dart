@@ -120,6 +120,7 @@ class _TicketsState extends State<Tickets> {
               SizedBox(width: 20),
               Text(
                 'Tickets',
+                key: Key('ticketsTitle'),
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.w100,
@@ -153,6 +154,7 @@ class _TicketsState extends State<Tickets> {
                       ),
                       elevation: 4,
                       child: ListTile(
+                        key: Key('tickets_ticket_${index.toString()}'),
                         title: Text(_tickets[index].eventName),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,6 +174,7 @@ class _TicketsState extends State<Tickets> {
                           color: const Color.fromRGBO(87, 95, 105, 100),
                           elevation: 2,
                           child: IconButton(
+                            key: Key('tickets_ticket_lineup_${index.toString()}'),
                             icon: const Icon(Icons.calendar_today),
                             onPressed: () {
                               _handleCalendarIconClick(context, _tickets[index]);
@@ -212,12 +215,14 @@ class _TicketsState extends State<Tickets> {
           ),
           backgroundColor: const Color.fromARGB(255, 51, 60, 69),
           title: const Text('Lineup'),
+          key: const Key('tickets_ticket_lineup'),
           content: Image.memory(
             base64.decode(ticket.eventImage),
             fit: BoxFit.cover,
             ),
           actions: [
             TextButton(
+              key: const Key('tickets_ticket_lineup_ok_button'),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -238,6 +243,7 @@ class _TicketsState extends State<Tickets> {
           borderRadius: BorderRadius.circular(10),
         ),
         backgroundColor: const Color.fromARGB(255, 51, 60, 69),
+        key: const Key('tickets_ticket_name'),
         title: Text(ticket.eventName),
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,6 +272,7 @@ class _TicketsState extends State<Tickets> {
         ),
         actions: [
           TextButton(
+            key: const Key('tickets_ticket_name_ok_button'),
             onPressed: () {
               Navigator.pop(context);
             },
