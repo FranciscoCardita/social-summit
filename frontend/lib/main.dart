@@ -486,13 +486,15 @@ class SignupScreen extends StatelessWidget {
                       },
                     ),
                     const SizedBox(height: 8),
-                    InputDatePickerFormField(
+                    TextField(
                       key: const Key('signup_birthday_field'),
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1900),
-                      lastDate: DateTime.now(),
-                      fieldLabelText: 'Birthday',
-                      onDateSubmitted: (value) => birthDate = value.toString(),
+                      decoration: const InputDecoration(
+                        labelText: 'Birthday (mm/dd/yyyy)',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(),
+                        ),
+                      ),
+                      onChanged: (value) => birthDate = value,
                     ),
                     const SizedBox(height: 8),
                     TextField(
