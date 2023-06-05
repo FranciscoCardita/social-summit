@@ -41,16 +41,16 @@ void main() {
     expect(find.byKey(const Key('ticketsTitle')), findsOneWidget);
 
     // See ticket lineup
-    // await tester.tap(find.byKey(const Key('tickets_ticket_lineup_0')));
-    // await tester.pumpAndSettle(const Duration(seconds: 2));
-    // await Future.delayed(const Duration(seconds: 4));
+    await tester.tap(find.byKey(const Key('tickets_ticket_lineup_0')));
+    await tester.pumpAndSettle(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 4));
 
-    // expect(find.byKey(const Key('tickets_ticket_lineup')), findsOneWidget);
+    expect(find.byKey(const Key('tickets_ticket_lineup')), findsOneWidget);
 
-    // await tester.tap(find.byKey(const Key('tickets_ticket_lineup_ok_button')));
-    // await tester.pumpAndSettle(const Duration(seconds: 2));
+    await tester.tap(find.byKey(const Key('tickets_ticket_lineup_ok_button')));
+    await tester.pumpAndSettle(const Duration(seconds: 2));
 
-    // expect(find.byKey(const Key('ticketsTitle')), findsOneWidget);    
+    expect(find.byKey(const Key('ticketsTitle')), findsOneWidget);    
   });
   
 }
