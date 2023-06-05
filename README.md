@@ -74,3 +74,9 @@ See the [API endpoints documentation](backend/Routes.md) for more information.
 ### Database Schema
 
 See the [database schema documentation](backend/Database.md) for more information.
+
+## Project Links
+
+- [GitHub Repository](https://github.com/FranciscoCardita/social-summit)
+- [GitHub Backlog](https://github.com/users/FranciscoCardita/projects/2)
+- [Cloud Server Domain (https://social-summit.edid.dev/api/)](https://social-summit.edid.dev/api/)
